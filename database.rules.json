@@ -1,10 +1,16 @@
 {
   "rules": {
-    "casas":        { ".read": true, ".write": true },
-    "config":       { ".read": true, ".write": true },
-    "pagamentos":   { ".read": true, ".write": true },
-    "chamada":      { ".read": true, ".write": true },
-    "moradorToken": { ".read": true, ".write": true },
-    "historico":    { ".read": true, ".write": true }
+    "chamada": {
+      ".read": true,
+      ".write": true
+    },
+    "moradorToken": {
+      ".read": true,
+      ".write": true
+    },
+    "historico": {
+      ".read": true,
+      ".write": true
+    }
   }
 }

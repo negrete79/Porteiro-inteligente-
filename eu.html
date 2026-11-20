@@ -445,44 +445,9 @@ header{
   #rotate{display:flex}
   .app,.bottom-nav{display:none}
 }
-/* ===== Overlay de ativação (SaaS) ===== */
-.ativacao{position:fixed;inset:0;background:rgba(15,23,42,.92);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-.ativacao.show{display:flex}
-.ativacao-box{background:#fff;border-radius:20px;padding:32px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.ativacao-ic{width:62px;height:62px;border-radius:16px;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.ativacao-ic svg{width:30px;height:30px}
-.ativacao-box h2{font-size:19px;margin:0 0 8px}
-.ativacao-box p{color:#475569;font-size:14px;line-height:1.5;margin:0 0 18px}
-.atv-valor{display:flex;align-items:center;justify-content:space-between;background:#f1f5f9;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px}
-.atv-valor .atv-preco{font-size:20px;font-weight:800;color:#16a34a}
-.atv-btn{width:100%;background:#16a34a;color:#fff;border:none;padding:13px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
-.atv-btn:hover{background:#15803d}
-.atv-wpp{display:block;color:#0ea5e9;font-size:14px;font-weight:600;text-decoration:none;padding:8px;margin-bottom:8px}
-.atv-aviso{color:#94a3b8;font-size:11px;line-height:1.5;display:block}
 </style>
 </head>
 <body>
-<!-- Overlay de ativação (SaaS): aparece se o cliente não pagou -->
-<div id="ativacao" class="ativacao">
-  <div class="ativacao-box">
-    <div class="ativacao-ic">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-    </div>
-    <h2 id="atvTitle">Ative seu PortaLink</h2>
-    <p id="atvMsg">Sua assinatura está bloqueada. Pague para continuar usando o interfone.</p>
-    <div class="atv-valor">
-      <span>Plano <b id="atvPlano">mensal</b></span>
-      <span class="atv-preco" id="atvValor">R$ 29,90</span>
-    </div>
-    <button class="atv-btn" id="atvPixBtn" onclick="copiarPix()">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
-      Copiar PIX para pagar
-    </button>
-    <a class="atv-wpp" id="atvWpp" target="_blank" rel="noopener">Falar no WhatsApp</a>
-    <small class="atv-aviso" id="atvAviso">Após pagar, o acesso libera automaticamente. Se demorar, toque em WhatsApp.</small>
-  </div>
-</div>
-
 <div id="rotate">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 4v5h-5"/></svg>
   <p>Gire o celular</p>
@@ -764,72 +729,6 @@ header{
 const firebaseConfig={apiKey:"AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",authDomain:"doorvi-video.firebaseapp.com",databaseURL:"https://doorvi-video-default-rtdb.firebaseio.com",projectId:"doorvi-video",storageBucket:"doorvi-video.firebasestorage.app",messagingSenderId:"869461304542",appId:"1:869461304542:web:35fffbe8fb1b2a00a38e4f"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-/* SaaS: cada cliente tem sua casa. casaId vem da URL (?casa=ID).
-   Toda a sinalização (chamada, token, dispositivos) fica isolada por casa. */
-const CASA_ID=new URLSearchParams(location.search).get('casa')||'casa-padrao';
-const CASA_REF='casas/'+CASA_ID+'/';
-console.log('[PortaLink] casa:', CASA_ID);
-
-/* ===== SaaS: ativação + dispositivo + valores (lê o mesmo RTDB do painel) ===== */
-let casaStatus='trial';
-let cfgMensal=29.90, cfgVitalicio=199.00, cfgPixKey='', cfgWhatsapp='';
-// valores editáveis no painel → refletem aqui em tempo real
-db.ref('config/valores').on('value',s=>{
-  const v=s.val()||{};
-  cfgMensal=v.mensalidade||29.90; cfgVitalicio=v.vitalicio||199.00;
-  cfgPixKey=v.pixKey||''; cfgWhatsapp=v.whatsapp||'';
-});
-// status da casa: painel controla ativo/bloqueado/trial + vencimento
-db.ref('casas/'+CASA_ID).on('value',s=>{
-  const c=s.val();
-  if(!c){
-    // casa ainda não existe no painel: cria trial automático (7 dias) pra não travar o morador
-    db.ref('casas/'+CASA_ID).set({nome:'Casa '+CASA_ID.slice(-6),whatsapp:'',plano:'mensal',valor:cfgMensal,status:'trial',vencimento:Date.now()+7*86400000,criadoEm:Date.now()});
-    return;
-  }
-  const now=Date.now();
-  let st=c.status||'trial';
-  if(st!=='bloqueado' && c.plano!=='vitalicio' && c.vencimento && c.vencimento<now){ st='bloqueado'; }
-  casaStatus=st;
-  atualizarOverlay(c);
-  const ov=document.getElementById('ativacao');
-  if(st==='bloqueado') ov.classList.add('show'); else ov.classList.remove('show');
-});
-function atualizarOverlay(c){
-  const plano=(c&&c.plano)||'mensal';
-  document.getElementById('atvPlano').textContent=plano==='vitalicio'?'vitalício':'mensal';
-  const val=(plano==='vitalicio'?cfgVitalicio:cfgMensal);
-  document.getElementById('atvValor').textContent='R$ '+val.toFixed(2).replace('.',',');
-  const w=document.getElementById('atvWpp');
-  const msg='Olá! Quero ativar meu PortaLink (casa '+CASA_ID+').';
-  w.href=cfgWhatsapp?('https://wa.me/'+cfgWhatsapp.replace(/\D/g,'')+'?text='+encodeURIComponent(msg)):'#';
-  if(c && c.status==='bloqueado'){
-    document.getElementById('atvTitle').textContent='Acesso bloqueado';
-    document.getElementById('atvMsg').textContent='Sua assinatura venceu. Pague para liberar o interfone.';
-  }
-}
-function copiarPix(){
-  const plano=document.getElementById('atvPlano').textContent;
-  const venc=(plano.indexOf('vital')>=0?cfgVitalicio:cfgMensal).toFixed(2).replace('.',',');
-  const txt='PIX Copia e Cola\nChave: '+cfgPixKey+'\nValor: R$ '+venc+'\nPortaLink - casa '+CASA_ID;
-  if(navigator.clipboard && cfgPixKey){ navigator.clipboard.writeText(txt).then(avisoPixCopiado); }
-  else { alert(cfgPixKey?('Copie:\n\n'+txt):'PIX ainda não configurado pelo admin. Toque em WhatsApp.'); }
-}
-function avisoPixCopiado(){
-  const b=document.getElementById('atvPixBtn'); const o=b.innerHTML;
-  b.innerHTML='✓ PIX copiado! Cole no banco'; b.style.background='#15803d';
-  setTimeout(()=>{b.innerHTML=o;b.style.background='';},2500);
-}
-// registra o dispositivo no painel (id + modelo + último acesso) — painel vê cada aparelho instalado
-function registrarDispositivo(){
-  let devId=localStorage.getItem('pl_dev_id');
-  if(!devId){ devId='dev-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8); localStorage.setItem('pl_dev_id',devId); }
-  const ua=navigator.userAgent;
-  const modelo=/android/i.test(ua)?'Android':/iphone|ipad|ios/i.test(ua)?'iOS':/windows/i.test(ua)?'Windows':/mac/i.test(ua)?'Mac':'Outro';
-  db.ref(CASA_REF+'dispositivos/'+devId).set({modelo:modelo,ultimoAcesso:Date.now(),appVersion:'1.0.0',ua:ua.slice(0,120)});
-  setInterval(()=>db.ref(CASA_REF+'dispositivos/'+devId+'/ultimoAcesso').set(Date.now()),60000);
-}
-registrarDispositivo();
 /* Messaging — push mesmo com app fechado. Troque a VAPID pela sua
    (Firebase Console > Project Settings > Cloud Messaging > Web Push > Generate). */
 const VAPID='COLE_AQUI_SUA_VAPID_KEY';
@@ -839,7 +738,7 @@ async function salvarTokenFCM(){
   if(!messaging) return;
   try{
     const token=await messaging.getToken({vapidKey:VAPID});
-    if(token){ await db.ref(CASA_REF+'moradorToken').set(token); console.log('[FCM] token salvo casa', CASA_ID); }
+    if(token){ await db.ref('moradorToken').set(token); console.log('[FCM] token salvo'); }
   }catch(e){ console.warn('[FCM] getToken falhou',e); }
 }
 try{ if(messaging && typeof messaging.onTokenRefresh==='function'){ messaging.onTokenRefresh(()=>salvarTokenFCM()); } }catch(e){}
@@ -1153,7 +1052,7 @@ function parar(){
 }
 
 /* ---------- Listener Firebase ---------- */
-db.ref(CASA_REF+'chamada').on('value',s=>{
+db.ref('chamada').on('value',s=>{
   let d=s.val();
   if(d && d.status==='chamando' && !atendido){
     const nome=(d.nome||'Visitante');
@@ -1212,7 +1111,7 @@ async function atender(){
   dbg('conectando…');
   let nome=document.getElementById('nomeChamando').innerText;
   salvarHistorico(nome,'Atendida');
-  await db.ref(CASA_REF+'chamada/status').set('atendido');
+  await db.ref('chamada/status').set('atendido');
   let stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
   localStream=stream;
   const vl=document.getElementById('videoLocal');
@@ -1238,16 +1137,16 @@ async function atender(){
     console.log('[track] recebido do visitante:',e.track.kind,e.track.readyState);
     dbg('track: '+e.track.kind+' '+e.track.readyState);
   };
-  pc.onicecandidate=e=>{if(e.candidate){const t=e.candidate.candidate.match(/typ (\w+)/);console.log('[ICE] cand:',t?t[1]:'?');db.ref(CASA_REF+'chamada/candidateMorador').push(JSON.stringify(e.candidate))}};
+  pc.onicecandidate=e=>{if(e.candidate){const t=e.candidate.candidate.match(/typ (\w+)/);console.log('[ICE] cand:',t?t[1]:'?');db.ref('chamada/candidateMorador').push(JSON.stringify(e.candidate))}};
   const filaCandidatos=[];
   let descRemota=false;
-  db.ref(CASA_REF+'chamada/candidateVisitante').on('child_added',async s=>{
+  db.ref('chamada/candidateVisitante').on('child_added',async s=>{
     if(!s.val()||!pc) return;
     const c=JSON.parse(s.val());
     if(!descRemota){filaCandidatos.push(c);console.log('[ICE] candidato na fila ('+filaCandidatos.length+')');dbg('cands na fila: '+filaCandidatos.length);return;}
     try{await pc.addIceCandidate(c)}catch(e){console.warn('[ICE] addIceCandidate:',e)}
   });
-  let snap=await db.ref(CASA_REF+'chamada').get();
+  let snap=await db.ref('chamada').get();
   await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(snap.val().offer)));
   descRemota=true;
   for(const c of filaCandidatos){try{await pc.addIceCandidate(c)}catch(e){}}
@@ -1255,19 +1154,19 @@ async function atender(){
   stream.getTracks().forEach(t=>pc.addTrack(t,stream));
   let ans=await pc.createAnswer();
   await pc.setLocalDescription(ans);
-  await db.ref(CASA_REF+'chamada/answer').set(JSON.stringify(ans));
+  await db.ref('chamada/answer').set(JSON.stringify(ans));
 }
 function recusar(){
   let nome=document.getElementById('nomeChamando').innerText;
   salvarHistorico(nome,'Recusada');
   atendido=false;
-  db.ref(CASA_REF+'chamada').remove();parar();
+  db.ref('chamada').remove();parar();
   document.getElementById('alerta').style.display='none';
   document.getElementById('callOverlay').style.display='none';
 }
 function encerrar(){
   atendido=false;
-  db.ref(CASA_REF+'chamada').remove();
+  db.ref('chamada').remove();
   location.reload();
 }
 
