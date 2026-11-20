@@ -1,0 +1,9 @@
+{
+  "name": "portalink",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PortaLink — interfone por vídeo + ativação PIX Mercado Pago",
+  "dependencies": {
+    "firebase-admin": "^12.1.0"
+  }
+}

@@ -1,0 +1,27 @@
+rules_version = '2';
+// PortaLink — regras Firestore de PRODUÇÃO (use DEPOIS de testar).
+// Morador (eu.html): só lê/escreve o documento da PRÓPRIA casa + config (mensalidade).
+// Admin (admin.html): acesso total via senha (validada no backend Admin SDK,
+// que ignora estas regras). Client sem auth fica restrito à própria casa.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // config: todo mundo pode ler (mensalidade/preço); só backend admin escreve
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // casas: morador lê/escreve só a sua (casaId via app). Leitura livre p/ admin client listar.
+    match /casas/{casaId} {
+      allow read: if true;
+      // escrita só via backend (Admin SDK) — bloqueia client direto em produção
+      allow write: if false;
+    }
+
+    // pagamentos / chaves / manuais: só backend admin (Admin SDK)
+    match /pagamentos/{doc} { allow read, write: if false; }
+    match /chaves/{doc}     { allow read, write: if false; }
+    match /manuais/{doc}    { allow read, write: if false; }
+  }
+}

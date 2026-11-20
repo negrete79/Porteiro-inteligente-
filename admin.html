@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PortaLink · Admin</title>
+<meta name="theme-color" content="#0F766E">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+:root{
+  --pri:#0F766E; --pri-2:#14B8A6; --pri-3:#5EEAD4;
+  --pri-50:#F0FDFA; --pri-100:#CCFBF1;
+  --bg:#F1F5F9; --surface:#FFFFFF; --surface-2:#F8FAFC;
+  --text:#0F172A; --text-2:#334155; --muted:#64748B; --muted-2:#94A3B8;
+  --line:#E2E8F0; --line-2:#F1F5F9;
+  --ok:#16A34A; --ok-bg:#F0FDF4; --ok-line:#BBF7D0;
+  --err:#DC2626; --err-bg:#FEF2F2; --err-line:#FECACA;
+  --warn:#D97706; --warn-bg:#FFFBEB; --warn-line:#FDE68A;
+  --r-sm:10px; --r-md:14px; --r-lg:18px;
+  --sh-1:0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.06);
+  --sh-2:0 4px 12px rgba(15,23,42,.06),0 2px 4px rgba(15,23,42,.04);
+  --sh-3:0 12px 28px rgba(15,23,42,.10),0 4px 10px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+/* login */
+#login{position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,var(--pri),var(--pri-2));display:flex;align-items:center;justify-content:center;padding:20px}
+#login .box{background:#fff;border-radius:var(--r-lg);padding:32px 28px;max-width:380px;width:100%;box-shadow:var(--sh-3);text-align:center}
+#login .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 16px}
+#login h1{font-size:20px;font-weight:800;margin-bottom:4px}
+#login p{font-size:13px;color:var(--muted);margin-bottom:20px}
+#login input{width:100%;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px;font-size:15px;margin-bottom:12px}
+#login button{width:100%;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer}
+#login .err{color:var(--err);font-size:13px;margin-top:10px;display:none}
+#login .err.show{display:block}
+
+/* layout */
+#app{display:none}
+#app.show{display:block}
+.topbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px}
+.topbar .brand{display:flex;align-items:center;gap:10px}
+.topbar .brand .lg{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.topbar .brand b{font-size:16px}
+.topbar .brand span{font-size:11px;color:var(--muted)}
+.topbar .logout{border:1px solid var(--line);background:var(--surface);color:var(--text-2);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+
+.tabs{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:61px;z-index:19}
+.tabs-in{max-width:1100px;margin:0 auto;display:flex;gap:4px;padding:0 16px;overflow-x:auto}
+.tabs-in button{border:none;background:none;padding:14px 16px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs-in button.active{color:var(--pri);border-bottom-color:var(--pri)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.section{display:none}
+.section.active{display:block}
+
+/* cards */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--surface);border-radius:var(--r-md);padding:16px;box-shadow:var(--sh-1);border:1px solid var(--line)}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:600}
+.stat .v{font-size:24px;font-weight:800;margin-top:4px;color:var(--text)}
+.stat .v.pri{color:var(--pri)}
+.stat .v.ok{color:var(--ok)}
+.stat .v.warn{color:var(--warn)}
+.stat .v.err{color:var(--err)}
+
+.card{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--sh-1);border:1px solid var(--line);margin-bottom:20px;overflow:hidden}
+.card-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-h h3{font-size:15px;font-weight:700}
+.card-b{padding:0}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;background:var(--surface-2);color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--line)}
+td{padding:11px 14px;border-bottom:1px solid var(--line-2);color:var(--text-2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700}
+.badge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.badge.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.badge.err{background:var(--err-bg);color:var(--err);border:1px solid var(--err-line)}
+.badge.pri{background:var(--pri-50);color:var(--pri);border:1px solid var(--pri-100)}
+.badge.mut{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+
+.btn{border:none;padding:8px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-pri{background:var(--pri);color:#fff}
+.btn-line{background:var(--surface);color:var(--text-2);border:1px solid var(--line)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-err{background:var(--err);color:#fff}
+.btn-sm{padding:5px 9px;font-size:11px}
+
+/* filtros */
+.filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filtros select,.filtros input{border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;background:var(--surface)}
+.filtros input{flex:1;min-width:180px}
+
+/* forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px}
+.form-row{padding:18px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:var(--r-sm);padding:11px;font-size:14px;font-family:inherit}
+.fld .hint{font-size:12px;color:var(--muted);margin-top:4px}
+.fld-full{grid-column:1/-1}
+.btn-save{background:var(--pri);color:#fff;border:none;padding:13px 24px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:6px}
+.btn-save:disabled{opacity:.5}
+
+.seg-title{font-size:13px;font-weight:700;color:var(--text);padding:16px 18px 8px;border-top:1px solid var(--line);background:var(--surface-2)}
+
+.selo{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700}
+.selo.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.selo.off{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+
+.keys-list{padding:14px 18px}
+.key-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:8px}
+.key-item code{font-family:monospace;font-size:14px;font-weight:700;color:var(--pri)}
+.key-item .meta{font-size:12px;color:var(--muted)}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+
+/* modal QR */
+#modalQr{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+#modalQr.show{display:flex}
+#modalQr .box{background:#fff;border-radius:var(--r-lg);padding:24px;max-width:340px;width:100%;text-align:center;box-shadow:var(--sh-3)}
+#modalQr img{width:220px;height:220px;margin:0 auto 12px;border:1px solid var(--line);border-radius:var(--r-sm);padding:6px;background:#fff}
+#modalQr h4{font-size:15px;font-weight:700;margin-bottom:6px}
+#modalQr code{display:block;font-family:monospace;font-size:11px;color:var(--text-2);word-break:break-all;background:var(--surface-2);padding:10px;border-radius:8px;margin-bottom:12px}
+#modalQr button{background:var(--pri);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  table{font-size:12px}
+  th,td{padding:8px 10px}
+  .hide-mob{display:none}
+}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="box">
+    <div class="logo">P</div>
+    <h1>PortaLink Admin</h1>
+    <p>Digite a senha de administrador</p>
+    <input id="loginPwd" type="password" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Entrar</button>
+    <div class="err" id="loginErr">Senha incorreta.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-in">
+      <div class="brand">
+        <div class="lg">P</div>
+        <div><b>PortaLink</b><br><span>Painel administrativo</span></div>
+      </div>
+      <button class="logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tabs-in">
+      <button class="active" onclick="switchTab('dash',this)">Dashboard</button>
+      <button onclick="switchTab('casas',this)">Casas</button>
+      <button onclick="switchTab('pagamentos',this)">Pagamentos</button>
+      <button onclick="switchTab('chaves',this)">Chaves</button>
+      <button onclick="switchTab('config',this)">Configurações</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dash">
+      <div class="stats">
+        <div class="stat"><div class="lbl">Receita no mês</div><div class="v pri" id="stRecMes">R$ 0,00</div></div>
+        <div class="stat"><div class="lbl">Receita total</div><div class="v pri" id="stRecTotal">R$ 0,00</div></div>
+        <div class="stat"><div class="lbl">Casas ativas</div><div class="v ok" id="stAtivas">0</div></div>
+        <div class="stat"><div class="lbl">Em trial</div><div class="v warn" id="stTrial">0</div></div>
+        <div class="stat"><div class="lbl">Vencendo (7 dias)</div><div class="v warn" id="stVencendo">0</div></div>
+        <div class="stat"><div class="lbl">Bloqueadas / vencidas</div><div class="v err" id="stBloq">0</div></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Próximos vencimentos</h3></div>
+        <div class="card-b"><table><thead><tr><th>Casa</th><th>Status</th><th>Vence em</th></tr></thead><tbody id="tbVenc"><tr><td colspan="3" class="empty">Carregando…</td></tr></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Últimos pagamentos</h3></div>
+        <div class="card-b"><table><thead><tr><th>Casa</th><th>Valor</th><th>Método</th><th>Data</th></tr></thead><tbody id="tbUltPag"><tr><td colspan="4" class="empty">Carregando…</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CASAS -->
+    <div class="section" id="sec-casas">
+      <div class="card">
+        <div class="card-h"><h3>Casas cadastradas</h3><button class="btn btn-line btn-sm" onclick="loadCasas()">↻ Atualizar</button></div>
+        <div class="card-b"><table><thead><tr><th>Nome</th><th>Status</th><th>Plano</th><th>Vencimento</th><th class="hide-mob">Criada</th><th>Links</th></tr></thead><tbody id="tbCasas"><tr><td colspan="6" class="empty">Carregando…</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PAGAMENTOS -->
+    <div class="section" id="sec-pagamentos">
+      <div class="card">
+        <div class="card-h">
+          <h3>Histórico de pagamentos</h3>
+          <div class="filtros">
+            <select id="pagFiltro" onchange="loadPagamentos()">
+              <option value="todos">Todos</option>
+              <option value="aprovado">Aprovados</option>
+              <option value="pendente">Pendentes</option>
+              <option value="recusado">Recusados</option>
+            </select>
+            <input id="pagBusca" placeholder="Buscar por casa / ID…" onkeydown="if(event.key==='Enter')loadPagamentos()">
+            <button class="btn btn-line btn-sm" onclick="loadPagamentos()">Buscar</button>
+            <button class="btn btn-pri btn-sm" onclick="exportCSV()">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <table><thead><tr><th>Casa</th><th>Valor</th><th>Status</th><th>Método</th><th>ID MP</th><th>Data</th><th></th></tr></thead><tbody id="tbPag"><tr><td colspan="7" class="empty">Carregando…</td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Soma dos aprovados</h3><div class="badge ok" id="somaAprov">R$ 0,00</div></div></div>
+    </div>
+
+    <!-- CHAVES -->
+    <div class="section" id="sec-chaves">
+      <div class="card">
+        <div class="card-h"><h3>Gerar chaves avulsas</h3></div>
+        <div class="form-grid">
+          <div class="fld"><label>Duração</label>
+            <select id="chDias">
+              <option value="30">30 dias</option>
+              <option value="60">60 dias</option>
+              <option value="90">90 dias</option>
+              <option value="365">1 ano</option>
+              <option value="36500">Vitalício</option>
+            </select>
+          </div>
+          <div class="fld"><label>Quantidade (1-100)</label><input id="chQtde" type="number" min="1" max="100" value="1"></div>
+          <div class="fld fld-full"><label>Observação</label><input id="chObs" placeholder="Ex: pagamento em dinheiro, transferência de João…"></div>
+          <div class="fld fld-full"><button class="btn-save" onclick="gerarChaves()">Gerar chaves</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Chaves geradas</h3><button class="btn btn-line btn-sm" onclick="loadChaves()">↻ Atualizar</button></div>
+        <div class="keys-list" id="chavesList"><div class="empty">Nenhuma chave gerada ainda.</div></div>
+      </div>
+    </div>
+
+    <!-- CONFIGURAÇÕES -->
+    <div class="section" id="sec-config">
+      <div class="card">
+        <div class="card-h"><h3>Cobrança</h3></div>
+        <div class="form-grid">
+          <div class="fld"><label>Mensalidade (R$/mês)</label><input id="cfgMensal" type="number" step="0.01" placeholder="29.90"></div>
+          <div class="fld"><label>Trial grátis (dias)</label><input id="cfgTrial" type="number" placeholder="7"></div>
+          <div class="fld fld-full"><label>Regra de bloqueio</label>
+            <div class="hint" style="background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:var(--r-sm);padding:11px;color:var(--warn);font-weight:600">Quem não paga, bloqueia no dia seguinte ao vencimento (seus dados ficam salvos)</div>
+          </div>
+          <div class="fld fld-full"><button class="btn-save" onclick="salvarCobranca()">Salvar cobrança</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Mercado Pago — PIX</h3><span class="selo off" id="mpSelo">Não configurado</span></div>
+        <div class="seg-title">Access Token</div>
+        <div class="form-row">
+          <div class="fld"><label>Access Token (produção)</label><input id="cfgToken" type="password" placeholder="APP_USR-xxxxxxxxxxxx"></div>
+          <div class="fld"><button class="btn-save" onclick="salvarToken()">Validar e salvar token</button></div>
+          <div id="mpResult" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR -->
+<div id="modalQr">
+  <div class="box">
+    <img id="mqImg" src="">
+    <h4 id="mqTitle">QR Code</h4>
+    <code id="mqCode"></code>
+    <button onclick="document.getElementById('modalQr').classList.remove('show')">Fechar</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = location.hostname.includes('vercel') ? '/api' : 'https://'+location.hostname+'/api';
+let PWD = sessionStorage.getItem('pl_admin_pwd') || '';
+let dadosCache = {};
+
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+function fmtBRL(v){ return 'R$ '+(Number(v||0)).toFixed(2).replace('.',','); }
+function fmtData(ts){ if(!ts) return '—'; const d=new Date(ts); return d.toLocaleDateString('pt-BR'); }
+function fmtDataHora(ts){ if(!ts) return '—'; const d=new Date(ts); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+function badgeStatus(st){
+  const map={ativo:['ok','Ativo'],trial:['warn','Trial'],bloqueado:['err','Bloqueado']};
+  const [c,l]=map[st]||['mut',st||'—']; return '<span class="badge '+c+'">'+l+'</span>';
+}
+
+async function api(path, opts={}){
+  opts.headers = opts.headers||{};
+  opts.headers['x-admin-pwd'] = PWD;
+  if(opts.body && typeof opts.body==='object'){ opts.headers['Content-Type']='application/json'; opts.body=JSON.stringify(opts.body); }
+  const r = await fetch(API+path, opts);
+  const j = await r.json().catch(()=>({}));
+  if(r.status===401){ doLogout(); throw new Error('Senha incorreta'); }
+  return j;
+}
+
+/* login */
+async function doLogin(){
+  const p=document.getElementById('loginPwd').value;
+  if(!p){ return; }
+  PWD=p;
+  try{
+    const d = await api('/admin-data?section=dashboard');
+    if(d.error){ document.getElementById('loginErr').classList.add('show'); PWD=''; return; }
+    sessionStorage.setItem('pl_admin_pwd',PWD);
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').classList.add('show');
+    renderDash(d);
+  }catch(e){
+    document.getElementById('loginErr').classList.add('show'); PWD='';
+  }
+}
+function doLogout(){ sessionStorage.removeItem('pl_admin_pwd'); PWD=''; location.reload(); }
+
+/* tabs */
+function switchTab(name,btn){
+  document.querySelectorAll('.tabs-in button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  if(name==='dash') loadDash();
+  else if(name==='casas') loadCasas();
+  else if(name==='pagamentos') loadPagamentos();
+  else if(name==='chaves') loadChaves();
+  else if(name==='config') loadConfig();
+}
+
+/* dashboard */
+async function loadDash(){
+  try{ const d=await api('/admin-data?section=dashboard'); renderDash(d); }catch(e){}
+}
+function renderDash(d){
+  document.getElementById('stRecMes').textContent=fmtBRL(d.receitaMes);
+  document.getElementById('stRecTotal').textContent=fmtBRL(d.receitaTotal);
+  document.getElementById('stAtivas').textContent=d.ativas;
+  document.getElementById('stTrial').textContent=d.trial;
+  document.getElementById('stVencendo').textContent=d.vencendo7;
+  document.getElementById('stBloq').textContent=d.bloqueadas;
+  const tv=document.getElementById('tbVenc');
+  tv.innerHTML = (d.proximosVencimentos||[]).length ? d.proximosVencimentos.map(c=>`<tr><td>${c.nome||c.id}</td><td>${badgeStatus(c.status)}</td><td>${fmtData(c.vencimento)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty">Nenhum vencimento próximo.</td></tr>';
+  const tp=document.getElementById('tbUltPag');
+  tp.innerHTML = (d.ultimosPagamentos||[]).length ? d.ultimosPagamentos.map(p=>`<tr><td>${(p.casaId||'').slice(0,12)}</td><td>${fmtBRL(p.valor)}</td><td>${p.method||'pix'}</td><td>${fmtData(p.aprovadoEm||p.data)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">Nenhum pagamento ainda.</td></tr>';
+}
+
+/* casas */
+let casasCache=[];
+function renderCasas(){
+  const tb=document.getElementById('tbCasas');
+  console.log("casas encontradas:", casasCache.length);
+  tb.innerHTML = casasCache.length ? casasCache.map(c=>{
+    const id=c.id;
+    const nomeEsc=(c.nome||'—').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    const venc = c.status==='ativo' ? c.ativoAte : c.trialFim;
+    return `<tr>
+      <td><b id="nome-${id}">${c.nome||'—'}</b><br><span style="font-size:11px;color:var(--muted)">${id}</span><br><button class="btn btn-line btn-sm" style="margin-top:4px" onclick="renomearCasa('${id}','${nomeEsc}')">✎ Renomear</button></td>
+      <td>${badgeStatus(c.status)}</td>
+      <td>${c.plano||'—'}</td>
+      <td>${fmtData(venc)}</td>
+      <td class="hide-mob">${fmtData(c.criadoEm)}</td>
+      <td>
+        <button class="btn btn-line btn-sm" onclick="showLinks('${id}','${nomeEsc}')" style="margin-bottom:4px">Links + QR</button>
+      </td></tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty">Nenhuma casa cadastrada. Abra o eu.html num celular pra uma casa aparecer sozinha aqui.</td></tr>';
+}
+async function loadCasas(){
+  // Firestore DIRETO (client) — mesma coleção "casas" do eu.html. Tempo real: casa nova aparece sozinha.
+  if(window.dbStore){
+    try{
+      dbStore.collection('casas').onSnapshot(snap=>{
+        casasCache = snap.docs.map(d=>({id:d.id, ...d.data()}))
+          .sort((a,b)=>(b.criadoEm||0)-(a.criadoEm||0));
+        renderCasas();
+      }, err=>console.warn('[admin] listener casas firestore:', err.code||err.message));
+      return;
+    }catch(e){ console.warn('[admin] firestore falhou, fallback API:', e.message); }
+  }
+  // FALLBACK: /api/admin-data (backend Firestore Admin)
+  try{
+    const d=await api('/admin-data?section=casas');
+    casasCache = d.casas||[];
+    renderCasas();
+  }catch(e){ renderCasas(); }
+}
+async function renomearCasa(casaId,atual){
+  const novo=prompt('Novo nome da casa:',atual);
+  if(!novo||!novo.trim()) return;
+  // Firestore direto (client) — reflete no eu.html na hora via onSnapshot
+  if(window.dbStore){
+    try{ await dbStore.collection('casas').doc(casaId).update({nome:novo.trim()}); toast('Casa renomeada.'); return; }
+    catch(e){ console.warn('[admin] rename firestore falhou, fallback API'); }
+  }
+  try{
+    const d=await api('/update-casa',{method:'POST',body:{casaId,nome:novo.trim()}});
+    if(d.error){ toast(d.error); return; }
+    toast('Casa renomeada.');
+  }catch(e){ toast('Erro ao renomear.'); }
+}
+function showLinks(casaId,nome){
+  const morador=location.origin+'/eu.html';
+  const visita=location.origin+'/';
+  const qrMor='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(morador);
+  document.getElementById('mqImg').src=qrMor;
+  document.getElementById('mqTitle').textContent='Links da casa: '+(nome||casaId.slice(0,8));
+  document.getElementById('mqCode').textContent='Morador: '+morador+'\nVisita: '+visita;
+  document.getElementById('modalQr').classList.add('show');
+}
+
+/* pagamentos */
+async function loadPagamentos(){
+  try{
+    const f=document.getElementById('pagFiltro').value, b=document.getElementById('pagBusca').value.trim();
+    const d=await api('/admin-data?section=pagamentos&filtro='+encodeURIComponent(f)+'&busca='+encodeURIComponent(b));
+    const tb=document.getElementById('tbPag');
+    const pags=d.pagamentos||[];
+    dadosCache.pagamentos=pags;
+    tb.innerHTML = pags.length ? pags.map(p=>{
+      const stMap={aprovado:['ok','Aprovado'],pendente:['warn','Pendente'],recusado:['err','Recusado']};
+      const [sc,sl]=stMap[p.status]||['mut',p.status];
+      return `<tr><td>${(p.casaId||'').slice(0,12)}</td><td>${fmtBRL(p.valor)}</td><td><span class="badge ${sc}">${sl}</span></td><td>${p.method||'pix'}</td><td style="font-size:11px;font-family:monospace">${(p.mpId||'').slice(0,18)}</td><td>${fmtData(p.data)}</td><td><button class="btn btn-line btn-sm" onclick="showPagQr('${p.id}')">QR</button></td></tr>`;
+    }).join('') : '<tr><td colspan="7" class="empty">Nenhum pagamento.</td></tr>';
+    document.getElementById('somaAprov').textContent=fmtBRL(d.somaAprovados);
+  }catch(e){}
+}
+function showPagQr(pid){
+  const p=(dadosCache.pagamentos||[]).find(x=>x.id===pid); if(!p) return;
+  if(p.qrBase64){ document.getElementById('mqImg').src='data:image/png;base64,'+p.qrBase64; }
+  else { document.getElementById('mqImg').src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(p.qrCode||p.mpId||''); }
+  document.getElementById('mqTitle').textContent='PIX — '+fmtBRL(p.valor);
+  document.getElementById('mqCode').textContent=p.qrCode||p.mpId||'—';
+  document.getElementById('modalQr').classList.add('show');
+}
+function exportCSV(){
+  const pags=dadosCache.pagamentos||[];
+  if(!pags.length){ toast('Nada para exportar.'); return; }
+  let csv='Casa,Valor,Status,Metodo,ID MP,Data\n';
+  pags.forEach(p=>{ csv+=[(p.casaId||'').slice(0,16),p.valor,p.status,p.method,p.mpId||'',fmtData(p.data)].join(',')+'\n'; });
+  const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='pagamentos-portalink.csv'; a.click(); toast('CSV exportado.');
+}
+
+/* chaves */
+async function gerarChaves(){
+  const dias=document.getElementById('chDias').value, qtde=document.getElementById('chQtde').value, obs=document.getElementById('chObs').value;
+  try{
+    const d=await api('/generate-keys',{method:'POST',body:{dias,quantidade:qtde,obs}});
+    if(d.error){ toast(d.error); return; }
+    toast(d.geradas+' chave(s) gerada(s).');
+    loadChaves();
+  }catch(e){ toast('Erro ao gerar.'); }
+}
+async function loadChaves(){
+  try{
+    const d=await api('/admin-data?section=chaves');
+    const el=document.getElementById('chavesList');
+    const ch=d.chaves||[];
+    el.innerHTML = ch.length ? ch.map(c=>`<div class="key-item">
+      <div><code>${c.codigo}</code><div class="meta">${c.dias>=36500?'Vitalício':c.dias+' dias'} · ${c.usado?'Usada':'Disponível'} ${c.obs?'· '+c.obs:''}</div></div>
+      <button class="btn btn-line btn-sm" onclick="navigator.clipboard.writeText('${c.codigo}').then(()=>toast('Chave copiada.'))">Copiar</button>
+    </div>`).join('') : '<div class="empty">Nenhuma chave gerada.</div>';
+  }catch(e){}
+}
+
+/* config */
+async function loadConfig(){
+  try{
+    const d=await api('/admin-data?section=dashboard');
+    document.getElementById('cfgMensal').value=d.mensalidade||29.90;
+    document.getElementById('cfgTrial').value=d.trialDias||7;
+    const selo=document.getElementById('mpSelo');
+    if(d.mpConfigurado){ selo.className='selo ok'; selo.textContent='PRODUÇÃO — PIX REAL'; }
+    else { selo.className='selo off'; selo.textContent='Não configurado'; }
+  }catch(e){}
+}
+async function salvarCobranca(){
+  const mensal=document.getElementById('cfgMensal').value, trial=document.getElementById('cfgTrial').value;
+  try{
+    const d=await api('/save-config',{method:'POST',body:{mensalidade:mensal,trialDias:trial}});
+    if(d.error){ toast(d.error); return; }
+    toast('Cobrança salva.');
+  }catch(e){ toast('Erro ao salvar.'); }
+}
+async function salvarToken(){
+  const t=document.getElementById('cfgToken').value.trim();
+  if(!t){ toast('Digite o token.'); return; }
+  const res=document.getElementById('mpResult');
+  res.innerHTML='<div style="font-size:13px;color:var(--muted)">Validando token…</div>';
+  try{
+    const d=await api('/save-config',{method:'POST',body:{mpToken:t}});
+    if(d.tokenValid===true){
+      res.innerHTML='<span class="selo ok">PRODUÇÃO — PIX REAL ✓</span><div style="font-size:12px;color:var(--ok);margin-top:6px">Token válido e salvo criptografado.</div>';
+      toast('Token validado e salvo.');
+      loadConfig();
+    } else {
+      res.innerHTML='<span class="selo off">Token inválido</span><div style="font-size:12px;color:var(--err);margin-top:6px">O Mercado Pago rejeitou este token.</div>';
+    }
+  }catch(e){ res.innerHTML='<span class="selo off">Erro ao validar.</span>'; }
+}
+
+// init
+if(PWD){ document.getElementById('loginPwd').value=PWD; doLogin(); }
+</script>
+</body>
+</html>

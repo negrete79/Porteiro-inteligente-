@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "chamada": {
+      ".read": true,
+      ".write": true
+    },
+    "moradorToken": {
+      ".read": true,
+      ".write": true
+    },
+    "historico": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
