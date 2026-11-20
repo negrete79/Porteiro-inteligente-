@@ -5,7 +5,28 @@
 // Se trocar de projeto, troca SÓ aqui.
 
 const PORTALINK_FIREBASE_CONFIG = {
-  apiKey: "COLE_AQUI_SUA_APIKEY_DO_CONSOLE",
+  apiKey: "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",
+  authDomain: "doorvi-video.firebaseapp.com",
+  databaseURL: "https://doorvi-video-default-rtdb.firebaseio.com",
+  projectId: "doorvi-video",
+  storageBucket: "doorvi-video.firebasestorage.app",
+  messagingSenderId: "869461304542",
+  appId: "1:869461304542:web:35fffbe8fb1b2a00a38e4f",
+  measurementId: "G-K5MT4P5LF2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
   authDomain: "doorvi-video.firebaseapp.com",
   databaseURL: "https://doorvi-video-default-rtdb.firebaseio.com",
   projectId: "doorvi-video",
