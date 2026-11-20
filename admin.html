@@ -2,105 +2,108 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>PortaLink · Admin</title>
-<meta name="theme-color" content="#0F766E">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PortaLink — Painel ADM</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
-:root{
-  --pri:#0F766E; --pri-2:#14B8A6; --bg:#F1F5F9; --surface:#fff; --surface-2:#F8FAFC;
-  --text:#0F172A; --text-2:#334155; --muted:#64748B; --line:#E2E8F0; --line-2:#F1F5F9;
-  --ok:#16A34A; --ok-bg:#F0FDF4; --ok-line:#BBF7D0;
-  --err:#DC2626; --err-bg:#FEF2F2; --err-line:#FECACA;
-  --warn:#D97706; --warn-bg:#FFFBEB; --warn-line:#FDE68A;
-  --r:14px; --sh:0 4px 12px rgba(15,23,42,.06)
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  :root{
+    --pri:#16a34a; --pri-d:#15803d; --pri-50:#dcfce7; --pri-100:#bbf7d0;
+    --ok:#16a34a; --ok-bg:#dcfce7; --ok-line:#bbf7d0;
+    --err:#dc2626; --err-bg:#fee2e2; --err-line:#fecaca;
+    --warn:#d97706; --warn-bg:#fef3c7;
+    --text:#0f172a; --text-2:#475569; --muted:#94a3b8;
+    --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
+    --sh-1:0 1px 2px rgba(0,0,0,.06); --sh-3:0 8px 24px rgba(0,0,0,.10);
+    --r-sm:10px; --r-md:14px; --r-lg:20px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
 
-/* LOGIN */
-#login{position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,var(--pri),var(--pri-2));display:flex;align-items:center;justify-content:center;padding:20px}
-#login .box{background:#fff;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;box-shadow:0 12px 28px rgba(15,23,42,.15);text-align:center}
-#login .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 16px}
-#login h1{font-size:20px;font-weight:800}
-#login p{font-size:13px;color:var(--muted);margin:4px 0 20px}
-#login button{width:100%;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
-#login .err{color:var(--err);font-size:13px;margin-top:10px;display:none}
-#login .err.show{display:block}
+  /* ===== LOGIN ===== */
+  #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#0f172a,#1e293b)}
+  #login .box{background:var(--card);border-radius:var(--r-lg);padding:36px 30px;max-width:380px;width:100%;box-shadow:var(--sh-3);text-align:center}
+  #login .logo{width:64px;height:64px;border-radius:18px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:0 auto 14px;box-shadow:0 6px 16px rgba(22,163,74,.4)}
+  #login h1{font-size:clamp(1.3rem,4vw,1.6rem);margin:0 0 4px}
+  #login p{color:var(--text-2);font-size:14px;margin:0 0 22px}
+  .pwd-wrap{position:relative;margin-bottom:14px}
+  .pwd-wrap input{width:100%;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 44px 13px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+  .pwd-wrap input:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-50)}
+  .pwd-wrap .eye{position:absolute;right:2px;top:0;bottom:0;width:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted);border-radius:var(--r-sm);transition:color .15s,background .15s}
+  .pwd-wrap .eye:hover{color:var(--text);background:rgba(0,0,0,.04)}
+  .pwd-wrap .eye:focus-visible{outline:2px solid var(--pri);outline-offset:-2px}
+  .pwd-wrap .eye.on{color:var(--pri)}
+  #login button.entrar{width:100%;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+  #login button.entrar:hover{background:var(--pri-d)}
+  #login .err{color:var(--err);font-size:13px;margin-top:12px;display:none}
+  #login .err.show{display:block}
+  #login .hint{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.5}
 
-/* OLHO PROFISSIONAL - SVG */
-.pwd-wrap{position:relative;width:100%;margin-bottom:12px}
-.pwd-wrap input{width:100%;border:1px solid var(--line);border-radius:10px;padding:13px 44px 13px 13px;font-size:15px;outline:none}
-.pwd-wrap input:focus{border-color:var(--pri)}
-.eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;color:#94A3B8}
-.eye-btn:hover{background:#F1F5F9;color:var(--pri)}
-.eye-btn svg{width:20px;height:20px}
-.eye-btn .icon-off{display:none}
-.eye-btn.show .icon-on{display:none}
-.eye-btn.show .icon-off{display:block}
-.eye-btn.show{color:var(--pri)}
+  /* ===== APP ===== */
+  #app{display:none;max-width:820px;margin:0 auto;padding:18px 16px 40px}
+  #app.show{display:block}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+  .topbar .brand{display:flex;align-items:center;gap:10px}
+  .topbar .brand .logo{width:38px;height:38px;border-radius:11px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+  .topbar .brand b{font-size:17px}
+  .topbar .brand small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+  .btn-sair{background:transparent;border:1px solid var(--line);color:var(--text-2);padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer}
+  .btn-sair:hover{background:#fff;border-color:var(--muted)}
 
-/* LAYOUT */
-#app{display:none}#app.show{display:block}
-.topbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.topbar-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand .lg{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
-.brand b{font-size:16px}.brand span{font-size:11px;color:var(--muted)}
-.logout{border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
-.tabs{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:61px;z-index:19}
-.tabs-in{max-width:1100px;margin:0 auto;display:flex;gap:4px;padding:0 16px;overflow-x:auto}
-.tabs-in button{border:none;background:none;padding:14px 16px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
-.tabs-in button.active{color:var(--pri);border-bottom-color:var(--pri)}
-.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
-.section{display:none}.section.active{display:block}
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
-.stat{background:#fff;border-radius:14px;padding:16px;box-shadow:var(--sh);border:1px solid var(--line)}
-.stat .lbl{font-size:12px;color:var(--muted);font-weight:600}.stat .v{font-size:24px;font-weight:800;margin-top:4px}
-.card{background:#fff;border-radius:14px;box-shadow:var(--sh);border:1px solid var(--line);margin-bottom:20px;overflow:hidden}
-.card-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.card-h h3{font-size:15px;font-weight:700}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 14px;background:var(--surface-2);color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--line)}
-td{padding:11px 14px;border-bottom:1px solid var(--line-2);color:var(--text-2);vertical-align:middle}
-.badge{display:inline-flex;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700}
-.badge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
-.badge.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
-.badge.err{background:var(--err-bg);color:var(--err);border:1px solid var(--err-line)}
-.badge.mut{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
-.btn{border:none;padding:8px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.btn-pri{background:var(--pri);color:#fff}.btn-line{background:#fff;color:var(--text-2);border:1px solid var(--line)}.btn-ok{background:var(--ok);color:#fff}.btn-err{background:var(--err);color:#fff}.btn-sm{padding:5px 9px;font-size:11px}
-.filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.filtros select,.filtros input{border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px}
-.filtros input{flex:1;min-width:180px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px}
-.form-row{padding:18px}.fld{margin-bottom:14px}.fld label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
-.fld input,.fld select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:14px}
-.fld .hint{font-size:12px;color:var(--muted);margin-top:4px}
-.fld-full{grid-column:1/-1}
-.btn-save{background:var(--pri);color:#fff;border:none;padding:13px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
-.selo{display:inline-flex;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700}
-.selo.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
-.selo.off{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
-.keys-list{padding:14px 18px}.key-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px}
-.key-item code{font-family:monospace;font-size:14px;font-weight:700;color:var(--pri)}
-.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
-.alert-err{background:var(--err-bg);border:1px solid var(--err-line);color:var(--err);padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;margin:14px}
-#modalQr{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
-#modalQr.show{display:flex}#modalQr .box{background:#fff;border-radius:18px;padding:24px;max-width:340px;width:100%;text-align:center}
-#modalQr img{width:220px;height:220px;margin:0 auto 12px;border:1px solid var(--line);border-radius:10px;padding:6px}
-#modalQr code{display:block;font-family:monospace;font-size:11px;word-break:break-all;background:var(--surface-2);padding:10px;border-radius:8px;margin-bottom:12px}
-#modalQr button{background:var(--pri);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
-#toast.show{opacity:1}
-@media(max-width:640px){.form-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+  .conn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);background:var(--card);border:1px solid var(--line);padding:9px 14px;border-radius:var(--r-sm);margin-bottom:16px}
+  .conn .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex-shrink:0}
+  .conn.ok .dot{background:var(--ok);box-shadow:0 0 0 4px var(--ok-bg)}
+  .conn.off .dot{background:var(--err);box-shadow:0 0 0 4px var(--err-bg)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:18px;margin-bottom:16px;box-shadow:var(--sh-1)}
+  .card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .card-h h3{margin:0;font-size:15px}
+  .card-h .sub{color:var(--muted);font-size:12px;font-weight:400}
+
+  .status-row{display:flex;align-items:center;gap:12px}
+  .status-row .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .status-row .ic.on{background:var(--ok-bg);color:var(--ok)}
+  .status-row .ic.off{background:#f1f5f9;color:var(--muted)}
+  .status-row .txt b{display:block;font-size:14px}
+  .status-row .txt small{color:var(--muted);font-size:12px;word-break:break-all}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .badge.err{background:var(--err-bg);color:var(--err)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.muted{background:#f1f5f9;color:var(--muted)}
+
+  .chamada-box{padding:14px;border-radius:var(--r-sm);background:#f8fafc;border:1px solid var(--line);text-align:center}
+  .chamada-box.ringing{background:var(--err-bg);border-color:var(--err-line)}
+  .chamada-box .big{font-size:18px;font-weight:700;margin-bottom:2px}
+  .chamada-box .nome{color:var(--text-2);font-size:13px}
+  .chamada-box.idle .big{color:var(--muted);font-weight:600}
+
+  .acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:480px){.acoes{grid-template-columns:1fr}}
+  .btn{padding:13px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:background .15s,opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-pri{background:var(--pri);color:#fff}
+  .btn-pri:hover{background:var(--pri-d)}
+  .btn-line{background:#fff;border:1px solid var(--line);color:var(--text-2)}
+  .btn-line:hover{border-color:var(--muted)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn svg{width:18px;height:18px}
+
+  .log-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+  .log-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r-sm);background:#f8fafc;border:1px solid var(--line)}
+  .log-item .li-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--pri-50);color:var(--pri);flex-shrink:0}
+  .log-item .li-ic svg{width:16px;height:16px}
+  .log-item .li-info{flex:1;min-width:0}
+  .log-item .li-info b{display:block;font-size:13px}
+  .log-item .li-info small{color:var(--muted);font-size:11px}
+  .log-empty{text-align:center;color:var(--muted);font-size:13px;padding:18px}
+
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:11px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="firebase.js"></script>
 </head>
 <body>
 
+<!-- ===== LOGIN ===== -->
 <div id="login">
   <div class="box">
     <div class="logo">P</div>
@@ -108,302 +111,206 @@ td{padding:11px 14px;border-bottom:1px solid var(--line-2);color:var(--text-2);v
     <p>Digite a senha de administrador</p>
     <div class="pwd-wrap">
       <input id="loginPwd" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-      <button type="button" class="eye-btn" onclick="togglePwd('loginPwd',this)" aria-label="Mostrar senha">
-        <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      <button type="button" class="eye" onclick="togglePwd('loginPwd',this)" aria-label="Mostrar senha"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+    <button class="entrar" onclick="doLogin()">Entrar</button>
+    <div class="err" id="loginErr">Senha incorreta.</div>
+    <div class="hint">Conexão direta com o Firebase do app (doorvi-video).<br>A senha é validada no navegador.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">P</div>
+      <div><b>PortaLink</b><small>Painel administrativo</small></div>
+    </div>
+    <button class="btn-sair" onclick="doLogout()">Sair</button>
+  </div>
+
+  <div class="conn" id="conn"><span class="dot"></span><span id="connTxt">Conectando ao Firebase…</span></div>
+
+  <!-- Status do morador -->
+  <div class="card">
+    <div class="card-h"><h3>App do morador</h3><span class="sub">lendo /moradorToken</span></div>
+    <div class="status-row">
+      <div class="ic off" id="morIc">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+      </div>
+      <div class="txt">
+        <b id="morTitle">Aguardando…</b>
+        <small id="morSub">o morador ainda não abriu o app</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chamada ao vivo -->
+  <div class="card">
+    <div class="card-h"><h3>Chamada ao vivo</h3><span class="sub">lendo /chamada</span></div>
+    <div class="chamada-box idle" id="chBox">
+      <div class="big" id="chBig">Ninguém chamando</div>
+      <div class="nome" id="chNome">—</div>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="card">
+    <div class="card-h"><h3>Ações</h3><span class="sub">escreve em /chamada</span></div>
+    <div class="acoes">
+      <button class="btn btn-pri" id="btnTocar" onclick="tocarTeste()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Tocar campainha de teste
+      </button>
+      <button class="btn btn-line" id="btnEncerrar" onclick="encerrarChamada()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Encerrar chamada
       </button>
     </div>
-    <button onclick="doLogin()">Entrar</button>
-    <div class="err" id="loginErr">Senha incorreta.</div>
+    <p style="font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.5">O botão <b>Tocar</b> escreve <code>{status:'chamando', nome:'Teste — Painel ADM'}</code> no mesmo caminho que a campainha real usa. O app do morador vai tocar na hora — é assim que o painel <b>vê e é visto</b> pelo app.</p>
+  </div>
+
+  <!-- Log -->
+  <div class="card">
+    <div class="card-h"><h3>Histórico de campainhas</h3><span class="sub">lendo /historico (últimas 20)</span></div>
+    <div class="log-list" id="logList"><div class="log-empty">Sem registros ainda.</div></div>
   </div>
 </div>
 
-<div id="app">
-  <div class="topbar"><div class="topbar-in"><div class="brand"><div class="lg">P</div><div><b>PortaLink</b><br><span>Painel administrativo</span></div></div><button class="logout" onclick="doLogout()">Sair</button></div></div>
-  <div class="tabs"><div class="tabs-in">
-    <button class="active" onclick="switchTab('dash',this)">Dashboard</button>
-    <button onclick="switchTab('casas',this)">Casas</button>
-    <button onclick="switchTab('pagamentos',this)">Pagamentos</button>
-    <button onclick="switchTab('chaves',this)">Chaves</button>
-    <button onclick="switchTab('config',this)">Configurações</button>
-  </div></div>
+<div class="toast" id="toast"></div>
 
-  <div class="wrap">
-    <div class="section active" id="sec-dash">
-      <div class="stats">
-        <div class="stat"><div class="lbl">Receita no mês</div><div class="v" style="color:var(--pri)" id="stRecMes">R$ 0,00</div></div>
-        <div class="stat"><div class="lbl">Receita total</div><div class="v" style="color:var(--pri)" id="stRecTotal">R$ 0,00</div></div>
-        <div class="stat"><div class="lbl">Casas ativas</div><div class="v" style="color:var(--ok)" id="stAtivas">0</div></div>
-        <div class="stat"><div class="lbl">Em trial</div><div class="v" style="color:var(--warn)" id="stTrial">0</div></div>
-        <div class="stat"><div class="lbl">Vencendo (7 dias)</div><div class="v" style="color:var(--warn)" id="stVencendo">0</div></div>
-        <div class="stat"><div class="lbl">Bloqueadas</div><div class="v" style="color:var(--err)" id="stBloq">0</div></div>
-      </div>
-      <div class="card"><div class="card-h"><h3>Próximos vencimentos</h3></div><div><table><thead><tr><th>Casa</th><th>Status</th><th>Vence em</th></tr></thead><tbody id="tbVenc"><tr><td colspan="3" class="empty">Carregando…</td></tr></tbody></table></div></div>
-      <div class="card"><div class="card-h"><h3>Últimos pagamentos</h3></div><div><table><thead><tr><th>Casa</th><th>Valor</th><th>Método</th><th>Data</th></tr></thead><tbody id="tbUltPag"><tr><td colspan="4" class="empty">Carregando…</td></tr></tbody></table></div></div>
-    </div>
-
-    <div class="section" id="sec-casas">
-      <div class="card">
-        <div class="card-h"><h3>Casas cadastradas</h3><button class="btn btn-line btn-sm" onclick="loadCasas()">Atualizar</button></div>
-        <div id="casasAlert"></div>
-        <div><table><thead><tr><th>Nome</th><th>Status</th><th>Plano</th><th>Vencimento</th><th>Links</th><th></th></tr></thead><tbody id="tbCasas"><tr><td colspan="6" class="empty">Carregando…</td></tr></tbody></table></div>
-      </div>
-    </div>
-
-    <div class="section" id="sec-pagamentos">
-      <div class="card">
-        <div class="card-h"><h3>Histórico de pagamentos</h3>
-          <div class="filtros">
-            <select id="pagFiltro" onchange="loadPagamentos()"><option value="todos">Todos</option><option value="aprovado">Aprovados</option><option value="pendente">Pendentes</option><option value="recusado">Recusados</option></select>
-            <input id="pagBusca" placeholder="Buscar por casa / ID…" onkeydown="if(event.key==='Enter')loadPagamentos()">
-            <button class="btn btn-line btn-sm" onclick="loadPagamentos()">Buscar</button>
-            <button class="btn btn-pri btn-sm" onclick="exportCSV()">Exportar CSV</button>
-          </div>
-        </div>
-        <div><table><thead><tr><th>Casa</th><th>Valor</th><th>Status</th><th>Método</th><th>ID MP</th><th>Data</th><th></th></tr></thead><tbody id="tbPag"><tr><td colspan="7" class="empty">Carregando…</td></tr></tbody></table></div>
-      </div>
-      <div class="card"><div class="card-h"><h3>Soma dos aprovados</h3><div class="badge ok" id="somaAprov">R$ 0,00</div></div></div>
-    </div>
-
-    <div class="section" id="sec-chaves">
-      <div class="card"><div class="card-h"><h3>Gerar chaves avulsas</h3></div>
-        <div class="form-grid">
-          <div class="fld"><label>Duração</label><select id="chDias"><option value="30">30 dias</option><option value="60">60 dias</option><option value="90">90 dias</option><option value="365">1 ano</option><option value="36500">Vitalício</option></select></div>
-          <div class="fld"><label>Quantidade (1-100)</label><input id="chQtde" type="number" min="1" max="100" value="1"></div>
-          <div class="fld fld-full"><label>Observação</label><input id="chObs" placeholder="Ex: pagamento em dinheiro…"></div>
-          <div class="fld fld-full"><button class="btn-save" onclick="gerarChaves()">Gerar chaves</button></div>
-        </div>
-      </div>
-      <div class="card"><div class="card-h"><h3>Chaves geradas</h3><button class="btn btn-line btn-sm" onclick="loadChaves()">Atualizar</button></div><div class="keys-list" id="chavesList"><div class="empty">Nenhuma chave gerada ainda.</div></div></div>
-    </div>
-
-    <div class="section" id="sec-config">
-      <div class="card"><div class="card-h"><h3>Cobrança</h3></div>
-        <div class="form-grid">
-          <div class="fld"><label>Mensalidade (R$/mês)</label><input id="cfgMensal" type="number" step="0.01" placeholder="29.90"></div>
-          <div class="fld"><label>Trial grátis (dias)</label><input id="cfgTrial" type="number" placeholder="7"></div>
-          <div class="fld fld-full"><div class="hint" style="background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:11px;color:var(--warn);font-weight:600">Quem não paga, bloqueia no dia seguinte ao vencimento (seus dados ficam salvos)</div></div>
-          <div class="fld fld-full"><button class="btn-save" onclick="salvarCobranca()">Salvar cobrança</button></div>
-        </div>
-      </div>
-      <div class="card"><div class="card-h"><h3>Mercado Pago — PIX</h3><span class="selo off" id="mpSelo">Não configurado</span></div>
-        <div class="form-row">
-          <div class="fld"><label>Access Token (produção)</label>
-            <div class="pwd-wrap">
-              <input id="cfgToken" type="password" placeholder="APP_USR-xxxxxxxxxxxx" autocomplete="off">
-              <button type="button" class="eye-btn" onclick="togglePwd('cfgToken',this)" aria-label="Mostrar token">
-                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="fld"><button class="btn-save" onclick="salvarToken()">Validar e salvar token</button></div>
-          <div id="mpResult" style="margin-top:10px"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="modalQr"><div class="box"><img id="mqImg" src=""><h4 id="mqTitle">QR Code</h4><code id="mqCode"></code><button onclick="document.getElementById('modalQr').classList.remove('show')">Fechar</button></div></div>
-<div id="toast"></div>
-
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
-const API = '/api';
-let PWD = sessionStorage.getItem('pl_admin_pwd') || '';
-let casasCache = [];
-let dbStore = null;
-try{ if(window.firebase && window.PORTALINK_FIREBASE_CONFIG){ if(!firebase.apps.length) firebase.initializeApp(window.PORTALINK_FIREBASE_CONFIG); dbStore = firebase.firestore(); } }catch(e){ console.log('[PORTALINK] Firestore indisponível', e); }
+/* ===== CONFIG (mesmo Firebase/RTDB do eu.html) ===== */
+const firebaseConfig={apiKey:"AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",authDomain:"doorvi-video.firebaseapp.com",databaseURL:"https://doorvi-video-default-rtdb.firebaseio.com",projectId:"doorvi-video",storageBucket:"doorvi-video.firebasestorage.app",messagingSenderId:"869461304542",appId:"1:869461304542:web:35fffbe8fb1b2a00a38e4f"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const fbProjectId=firebaseConfig.projectId;
 
-function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
-function fmtBRL(v){ return 'R$ '+(Number(v||0)).toFixed(2).replace('.',','); }
-function fmtData(ts){ if(!ts) return '—'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('pt-BR'); }
-function fmtDataHora(ts){ if(!ts) return '—'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
-function badgeStatus(st){ const map={ativo:['ok','Ativo'],trial:['warn','Trial'],bloqueado:['err','Bloqueado']}; const [c,l]=map[st]||['mut',st||'—']; return '<span class="badge '+c+'">'+l+'</span>'; }
-function togglePwd(id,btn){ const input=document.getElementById(id); const show=input.type==='password'; input.type=show?'text':'password'; btn.classList.toggle('show',show); }
-function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* ===== SENHA (troque aqui) =====
+   Gate client-side: o painel roda em Firebase Hosting (estático, sem backend),
+   então a senha é conferida no navegador. Pra segurança real do banco, o que vale
+   são as regras do RTDB (database.rules.json). */
+const ADMIN_PWD='portalink2026';
 
-async function api(path, opts={}){
-  opts.headers = opts.headers||{};
-  opts.headers['x-admin-pwd'] = PWD;
-  if(opts.body && typeof opts.body==='object'){ opts.headers['Content-Type']='application/json'; opts.body=JSON.stringify(opts.body); }
-  const r = await fetch(API+path, opts);
-  const j = await r.json().catch(()=>({}));
-  if(r.status===401){ doLogout(); throw new Error('Senha incorreta'); }
-  return j;
+/* ===== LOGIN ===== */
+const EYE_OPEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_CLOSED='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c6.5 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3.5 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
+function togglePwd(id,btn){
+  const inp=document.getElementById(id);
+  if(!inp) return;
+  if(inp.type==='password'){inp.type='text';btn.innerHTML=EYE_CLOSED;btn.classList.add('on');}
+  else{inp.type='password';btn.innerHTML=EYE_OPEN;btn.classList.remove('on');}
 }
-
-async function doLogin(){
-  const p=document.getElementById('loginPwd').value.trim();
-  if(!p) return;
-  PWD=p;
-  try{
-    const d = await api('/admin-data?section=dashboard');
-    if(d.error){ document.getElementById('loginErr').classList.add('show'); PWD=''; return; }
-    sessionStorage.setItem('pl_admin_pwd',PWD);
+let logado=false;
+function doLogin(){
+  const p=document.getElementById('loginPwd').value;
+  if(p===ADMIN_PWD){
+    logado=true;
+    sessionStorage.setItem('pl_admin_pwd',p);
     document.getElementById('login').style.display='none';
     document.getElementById('app').classList.add('show');
-    renderDash(d); startCasasRealtime();
-  }catch(e){ document.getElementById('loginErr').classList.add('show'); PWD=''; }
+    iniciarPainel();
+  }else{
+    const e=document.getElementById('loginErr');e.classList.add('show');
+    document.getElementById('loginPwd').value='';
+  }
 }
-function doLogout(){ sessionStorage.removeItem('pl_admin_pwd'); PWD=''; location.reload(); }
+function doLogout(){sessionStorage.removeItem('pl_admin_pwd');location.reload();}
 
-function switchTab(name,btn){
-  document.querySelectorAll('.tabs-in button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  if(name==='dash') loadDash();
-  else if(name==='casas') loadCasas();
-  else if(name==='pagamentos') loadPagamentos();
-  else if(name==='chaves') loadChaves();
-  else if(name==='config') loadConfig();
-}
-
-async function loadDash(){ try{ const d=await api('/admin-data?section=dashboard'); renderDash(d); }catch(e){} }
-function renderDash(d){
-  document.getElementById('stRecMes').textContent=fmtBRL(d.receitaMes);
-  document.getElementById('stRecTotal').textContent=fmtBRL(d.receitaTotal);
-  document.getElementById('stAtivas').textContent=d.ativas||0;
-  document.getElementById('stTrial').textContent=d.trial||0;
-  document.getElementById('stVencendo').textContent=d.vencendo7||0;
-  document.getElementById('stBloq').textContent=d.bloqueadas||0;
-  const tv=document.getElementById('tbVenc');
-  tv.innerHTML = (d.proximosVencimentos||[]).length ? d.proximosVencimentos.map(c=>`<tr><td>${esc(c.nome||c.id)}</td><td>${badgeStatus(c.status)}</td><td>${fmtData(c.vencimento)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty">Nenhum vencimento próximo.</td></tr>';
-  const tp=document.getElementById('tbUltPag');
-  tp.innerHTML = (d.ultimosPagamentos||[]).length ? d.ultimosPagamentos.map(p=>`<tr><td>${esc(p.casaNome||p.casaId||'—')}</td><td>${fmtBRL(p.valor)}</td><td>${esc(p.metodo||'Pix')}</td><td>${fmtDataHora(p.data||p.criadoEm)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">Nenhum pagamento ainda.</td></tr>';
-}
-
-/* CASAS - FIRESTORE EM TEMPO REAL - MESMA COLEÇÃO DO eu.html */
-function startCasasRealtime(){
-  if(!dbStore) { loadCasas(); return; }
-  dbStore.collection('casas').onSnapshot(snap=>{
-    casasCache = snap.docs.map(doc=>({id:doc.id, ...doc.data()}));
-    console.log('casas encontradas:', casasCache.length);
-    renderCasas(casasCache);
-    updateDashFromCasas();
-  }, err=>{
-    console.log('[PORTALINK] Firestore erro:', err.code);
-    document.getElementById('casasAlert').innerHTML = '<div class="alert-err">Firestore bloqueado: '+esc(err.code)+' — Crie o banco Firestore no projeto doorvi-video e publique a regra allow read, write: if true para testar.</div>';
-    loadCasas();
+/* ===== PAINEL ===== */
+function iniciarPainel(){
+  console.log('[painel] conectado firebase:', fbProjectId);
+  // conexão
+  db.ref('.info/connected').on('value',s=>{
+    const c=s.val();
+    const el=document.getElementById('conn');
+    if(c){el.classList.add('ok');el.classList.remove('off');document.getElementById('connTxt').textContent='Conectado ao Firebase — doorvi-video';}
+    else{el.classList.add('off');el.classList.remove('ok');document.getElementById('connTxt').textContent='Sem conexão com o Firebase…';}
   });
-  setTimeout(()=>{ if(!casasCache.length && document.getElementById('tbCasas').innerText.includes('Carregando')) loadCasas(); }, 7000);
-}
-function updateDashFromCasas(){
-  const ativas = casasCache.filter(c=>c.status==='ativo').length;
-  const trial = casasCache.filter(c=>c.status==='trial').length;
-  const bloq = casasCache.filter(c=>c.status==='bloqueado').length;
-  document.getElementById('stAtivas').textContent = ativas;
-  document.getElementById('stTrial').textContent = trial;
-  document.getElementById('stBloq').textContent = bloq;
-}
-async function loadCasas(){
-  try{ const d = await api('/admin-data?section=casas'); if(d.casas) { casasCache = d.casas; renderCasas(casasCache); return; } }catch(e){}
-  renderCasas(casasCache);
-}
-function renderCasas(list){
-  const tb = document.getElementById('tbCasas');
-  if(!list || !list.length){ tb.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma casa ainda. Abra o app do morador para criar a primeira.</td></tr>'; return; }
-  tb.innerHTML = list.map(c=>{
-    const venc = c.ativoAte || c.trialFim;
-    const link = location.origin + '/eu.html?casa=' + c.id;
-    return `<tr>
-      <td><b>${esc(c.nome||c.id)}</b><br><small style="color:var(--muted)">${esc(c.id)}</small></td>
-      <td>${badgeStatus(c.status)}</td>
-      <td>${esc(c.plano||'Mensal')}</td>
-      <td>${fmtData(venc)}</td>
-      <td><button class="btn btn-line btn-sm" onclick="copiarLink('${esc(c.id)}')">Copiar link</button></td>
-      <td style="white-space:nowrap">
-        <button class="btn btn-line btn-sm" onclick="renomearCasa('${esc(c.id)}','${esc(c.nome||'')}')">Renomear</button>
-        <button class="btn btn-ok btn-sm" onclick="ativarCasa('${esc(c.id)}')">Ativar 30d</button>
-        <button class="btn btn-err btn-sm" onclick="bloquearCasa('${esc(c.id)}')">Bloquear</button>
-      </td></tr>`;
-  }).join('');
-  const tv=document.getElementById('tbVenc');
-  const prox = [...list].sort((a,b)=>(a.ativoAte||a.trialFim||0)-(b.ativoAte||b.trialFim||0)).slice(0,5);
-  tv.innerHTML = prox.length ? prox.map(c=>`<tr><td>${esc(c.nome||c.id)}</td><td>${badgeStatus(c.status)}</td><td>${fmtData(c.ativoAte||c.trialFim)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty">Nenhum vencimento próximo.</td></tr>';
-}
-function copiarLink(id){ navigator.clipboard.writeText(location.origin+'/eu.html?casa='+id).then(()=>toast('Link copiado')); }
-async function renomearCasa(id, atual){
-  const nome = prompt('Novo nome da casa:', atual||'');
-  if(!nome) return;
-  if(dbStore) await dbStore.collection('casas').doc(id).update({nome});
-  else await api('/admin-data', {method:'POST', body:{acao:'renomear', id, nome}});
-  toast('Casa renomeada');
-}
-async function ativarCasa(id){
-  if(!confirm('Ativar esta casa por 30 dias?')) return;
-  const ativoAte = Date.now() + 30*24*60*60*1000;
-  if(dbStore) await dbStore.collection('casas').doc(id).update({status:'ativo', ativoAte});
-  else await api('/admin-data', {method:'POST', body:{acao:'ativar', id, dias:30}});
-  toast('Casa ativada por 30 dias');
-}
-async function bloquearCasa(id){
-  if(!confirm('Bloquear esta casa?')) return;
-  if(dbStore) await dbStore.collection('casas').doc(id).update({status:'bloqueado'});
-  else await api('/admin-data', {method:'POST', body:{acao:'bloquear', id}});
-  toast('Casa bloqueada');
+  // moradorToken
+  db.ref('moradorToken').on('value',s=>{
+    const tok=s.val();
+    const ic=document.getElementById('morIc');
+    if(tok){
+      ic.classList.add('on');ic.classList.remove('off');
+      document.getElementById('morTitle').innerHTML='App cadastrado <span class="badge ok">online</span>';
+      document.getElementById('morSub').textContent='token: '+String(tok).slice(0,24)+'…';
+    }else{
+      ic.classList.add('off');ic.classList.remove('on');
+      document.getElementById('morTitle').innerHTML='App não cadastrado <span class="badge muted">aguardando</span>';
+      document.getElementById('morSub').textContent='o morador precisa abrir o eu.html pelo menos uma vez';
+    }
+  });
+  // chamada ao vivo
+  db.ref('chamada').on('value',s=>{
+    const d=s.val();
+    const box=document.getElementById('chBox');
+    const btnEnc=document.getElementById('btnEncerrar');
+    if(d && d.status==='chamando'){
+      box.classList.add('ringing');box.classList.remove('idle');
+      document.getElementById('chBig').textContent='🔔 Chamando';
+      document.getElementById('chNome').textContent='Visitante: '+(d.nome||'(sem nome)');
+      btnEnc.disabled=false;
+    }else if(d && d.status==='atendido'){
+      box.classList.remove('ringing','idle');
+      document.getElementById('chBig').textContent='Atendido';
+      document.getElementById('chNome').textContent='—';
+      btnEnc.disabled=true;
+    }else{
+      box.classList.add('idle');box.classList.remove('ringing');
+      document.getElementById('chBig').textContent='Ninguém chamando';
+      document.getElementById('chNome').textContent='—';
+      btnEnc.disabled=true;
+    }
+  });
+  carregarLog();
 }
 
-/* PAGAMENTOS */
-async function loadPagamentos(){
+async function tocarTeste(){
+  const btn=document.getElementById('btnTocar');btn.disabled=true;
   try{
-    const filtro=document.getElementById('pagFiltro').value, busca=document.getElementById('pagBusca').value||'';
-    const d=await api('/admin-data?section=pagamentos&filtro='+filtro+'&busca='+encodeURIComponent(busca));
-    const tb=document.getElementById('tbPag');
-    tb.innerHTML=(d.pagamentos||[]).length ? d.pagamentos.map(p=>`<tr><td>${esc(p.casaNome||p.casaId||'—')}</td><td>${fmtBRL(p.valor)}</td><td>${badgeStatus(p.status==='aprovado'?'ativo':p.status)}</td><td>${esc(p.metodo||'Pix')}</td><td>${esc(p.mpId||'—')}</td><td>${fmtDataHora(p.data||p.criadoEm)}</td><td><button class="btn btn-line btn-sm" onclick="verQR('${esc(p.qr||'')}', '${esc(p.copia||'')}')">Ver QR</button></td></tr>`).join('') : '<tr><td colspan="7" class="empty">Nenhum pagamento.</td></tr>';
-    document.getElementById('somaAprov').textContent=fmtBRL(d.somaAprov||0);
-  }catch(e){}
+    await db.ref('chamada').set({status:'chamando', nome:'Teste — Painel ADM', ts:Date.now()});
+    await db.ref('historico').push({nome:'Teste — Painel ADM', status:'chamando', origem:'painel', data:new Date().toLocaleString('pt-BR'), ts:Date.now()});
+    toast('Campainha de teste enviada 🔔');
+  }catch(e){toast('Erro: '+e.message);}
+  setTimeout(()=>{btn.disabled=false;},800);
 }
-function verQR(qr, copia){ if(!qr){ toast('Sem QR para este pagamento'); return; } document.getElementById('mqImg').src=qr; document.getElementById('mqTitle').textContent='QR Code Pix'; document.getElementById('mqCode').textContent=copia||''; document.getElementById('modalQr').classList.add('show'); }
-function exportCSV(){
-  const rows=[['Casa','Valor','Status','Metodo','ID MP','Data']];
-  document.querySelectorAll('#tbPag tr').forEach(tr=>{ const tds=[...tr.querySelectorAll('td')].map(td=>td.innerText); if(tds.length) rows.push(tds); });
-  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='pagamentos.csv'; a.click();
+async function encerrarChamada(){
+  try{
+    await db.ref('chamada').remove();
+    toast('Chamada encerrada.');
+  }catch(e){toast('Erro: '+e.message);}
 }
 
-/* CHAVES */
-async function gerarChaves(){
-  const dias=+document.getElementById('chDias').value, qtde=+document.getElementById('chQtde').value||1, obs=document.getElementById('chObs').value||'';
-  const d=await api('/generate-keys',{method:'POST',body:{dias,qtde,obs}});
-  if(d.chaves){ toast(qtde+' chave(s) geradas'); loadChaves(); }
-  else toast(d.error||'Erro ao gerar');
-}
-async function loadChaves(){
-  try{ const d=await api('/admin-data?section=chaves');
-    const el=document.getElementById('chavesList');
-    el.innerHTML=(d.chaves||[]).length ? d.chaves.map(k=>`<div class="key-item"><div><code>${esc(k.codigo)}</code><div class="meta">${esc(k.obs||'')} • ${k.dias} dias • ${k.usada?'Usada':'Disponível'}</div></div><button class="btn btn-line btn-sm" onclick="navigator.clipboard.writeText('${esc(k.codigo)}').then(()=>toast('Copiado'))">Copiar</button></div>`).join('') : '<div class="empty">Nenhuma chave gerada ainda.</div>';
-  }catch(e){}
-}
-
-/* CONFIG */
-async function loadConfig(){
-  try{ const d=await api('/admin-data?section=config');
-    if(d.config){ document.getElementById('cfgMensal').value=d.config.mensalidade||29.90; document.getElementById('cfgTrial').value=d.config.trialDias||7; }
-    if(d.mpConfigurado){ document.getElementById('mpSelo').textContent='Configurado'; document.getElementById('mpSelo').className='selo ok'; }
-  }catch(e){}
-}
-async function salvarCobranca(){
-  const mensalidade=parseFloat(document.getElementById('cfgMensal').value)||29.90;
-  const trialDias=parseInt(document.getElementById('cfgTrial').value)||7;
-  const d=await api('/save-config',{method:'POST',body:{mensalidade,trialDias}});
-  toast(d.ok?'Cobrança salva':'Erro ao salvar');
-}
-async function salvarToken(){
-  const token=document.getElementById('cfgToken').value.trim();
-  if(!token){ toast('Cole o Access Token'); return; }
-  const d=await api('/save-config',{method:'POST',body:{mpToken:token}});
-  const el=document.getElementById('mpResult');
-  if(d.ok){ el.innerHTML='<div style="color:var(--ok);font-weight:600">Token validado e salvo.</div>'; document.getElementById('mpSelo').textContent='Configurado'; document.getElementById('mpSelo').className='selo ok'; }
-  else el.innerHTML='<div style="color:var(--err);font-weight:600">'+esc(d.error||'Token inválido')+'</div>';
+function carregarLog(){
+  db.ref('historico').limitToLast(20).on('value',s=>{
+    const v=s.val();const list=document.getElementById('logList');
+    if(!v){list.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
+    const arr=Object.values(v).sort((a,b)=>(b.ts||0)-(a.ts||0));
+    list.innerHTML=arr.map(h=>{
+      const ok=String(h.status||'').toLowerCase().indexOf('atend')>=0||h.origem==='painel';
+      return '<div class="log-item">'+
+        '<div class="li-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>'+
+        '<div class="li-info"><b>'+escapeHtml(h.nome||'Visitante')+'</b><small>'+escapeHtml(h.data||'')+(h.origem==='painel'?' · painel':'')+'</small></div>'+
+        '<span class="badge '+(ok?'ok':'warn')+'">'+escapeHtml(h.status||'?')+'</span>'+
+      '</div>';
+    }).join('');
+  });
 }
 
-/* AUTO-LOGIN */
-if(PWD){
-  document.getElementById('loginPwd').value = PWD;
-  doLogin();
-}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* toast */
+let toastT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* auto-login se já tem senha na sessão */
+(function(){
+  const p=sessionStorage.getItem('pl_admin_pwd');
+  if(p){document.getElementById('loginPwd').value=p;doLogin();}
+})();
 </script>
 </body>
 </html>

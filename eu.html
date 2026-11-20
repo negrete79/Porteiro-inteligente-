@@ -8,373 +8,1182 @@
 <meta name="theme-color" content="#0F766E">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
-:root{--pri:#0F766E;--pri-2:#14B8A6;--bg:#F1F5F9;--surface:#fff;--surface-2:#F8FAFC;--text:#0F172A;--text-2:#334155;--muted:#64748B;--line:#E2E8F0;--ok:#16A34A;--ok-bg:#F0FDF4;--ok-line:#BBF7D0;--err:#DC2626;--err-bg:#FEF2F2;--err-line:#FECACA;--warn:#D97706;--warn-bg:#FFFBEB;--warn-line:#FDE68A;--r:14px}
+:root{
+  --pri:#0F766E; --pri-2:#14B8A6; --pri-3:#5EEAD4;
+  --pri-50:#F0FDFA; --pri-100:#CCFBF1;
+  --bg:#F1F5F9; --surface:#FFFFFF; --surface-2:#F8FAFC;
+  --text:#0F172A; --text-2:#334155; --muted:#64748B; --muted-2:#94A3B8;
+  --line:#E2E8F0; --line-2:#F1F5F9;
+  --ok:#16A34A; --ok-bg:#F0FDF4; --ok-line:#BBF7D0;
+  --err:#DC2626; --err-bg:#FEF2F2; --err-line:#FECACA;
+  --warn:#D97706; --warn-bg:#FFFBEB; --warn-line:#FDE68A;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+  --sh-1:0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
+  --sh-2:0 4px 12px rgba(15,23,42,.06), 0 2px 4px rgba(15,23,42,.04);
+  --sh-3:0 12px 28px rgba(15,23,42,.10), 0 4px 10px rgba(15,23,42,.06);
+  --sh-pri:0 8px 20px rgba(15,118,110,.30);
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:112px}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(112px + env(safe-area-inset-bottom));
+}
 .app{max-width:480px;margin:0 auto;padding:0 14px}
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 4px 12px;position:sticky;top:0;background:var(--bg);z-index:20}
+
+/* ===== HEADER ===== */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(14px + env(safe-area-inset-top)) 4px 12px;
+  position:sticky;top:0;background:var(--bg);z-index:20;
+}
 .brand{display:flex;align-items:center;gap:11px}
-.brand .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
-.brand b{font-size:16px;display:block;line-height:1.1}.brand small{font-size:11px;color:var(--muted);font-weight:600}
-.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.brand .logo{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--pri),var(--pri-2));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:18px;box-shadow:var(--sh-pri);
+}
+.brand .name b{font-size:16px;font-weight:800;letter-spacing:-.3px;display:block;line-height:1.1}
+.brand .name small{font-size:11px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:4px}
+.brand .name small::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 2px var(--ok-bg)}
+.header-actions{display:flex;gap:6px}
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.18s;
+}
+.icon-btn:hover{background:var(--surface-2);border-color:var(--pri-3)}
+.icon-btn:active{transform:scale(.92)}
 .icon-btn svg{width:19px;height:19px}
 
-/* SELO - SEMPRE VISÍVEL */
-#trialBanner{margin:0 4px 12px;padding:12px 14px;border-radius:14px;display:flex;flex-direction:column;gap:10px;background:var(--ok-bg);border:1px solid var(--ok-line)}
-#trialBanner.ativo{background:#F0FDFA;border-color:#CCFBF1}
-#trialBanner.encerrado{background:var(--err-bg);border-color:var(--err-line)}
-#trialSeal{font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px}
-#trialBanner #trialSeal{color:var(--ok)}#trialBanner.ativo #trialSeal{color:var(--pri)}#trialBanner.encerrado #trialSeal{color:var(--err)}
-.dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
-#trialBtn{width:100%;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;background:var(--ok);color:#fff}
-#trialBtn:active{transform:scale(.98)}
-
-.hero{background:linear-gradient(135deg,var(--pri),var(--pri-2));border-radius:22px;padding:18px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px}
-.hero-row{display:flex;align-items:center;gap:14px}
-.hero .ring{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hero .ring svg{width:24px;height:24px}
-.hero .info{flex:1;min-width:0}.hero .info .label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.85}
-.hero .info h2{font-size:18px;font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ===== HERO STATUS ===== */
+.hero{
+  background:linear-gradient(135deg,var(--pri) 0%,var(--pri-2) 100%);
+  border-radius:var(--r-xl);padding:18px;color:#fff;
+  position:relative;overflow:hidden;box-shadow:var(--sh-pri);
+  margin-bottom:14px;
+}
+.hero::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;
+  background:rgba(255,255,255,.10);
+}
+.hero::after{
+  content:"";position:absolute;bottom:-60px;left:-30px;width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.hero-row{display:flex;align-items:center;gap:14px;position:relative}
+.hero .ring{
+  width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  position:relative;
+}
+.hero .ring::after{
+  content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.35);
+  animation:halo 2s infinite;
+}
+@keyframes halo{0%{transform:scale(.92);opacity:.8}100%{transform:scale(1.25);opacity:0}}
+.hero .ring svg{width:24px;height:24px;color:#fff}
+.hero .info{flex:1;min-width:0}
+.hero .info .label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.85}
+.hero .info h2{font-size:18px;font-weight:800;margin-top:2px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hero .info p{font-size:12px;opacity:.9;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hero .edit{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.btn-primary{width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
-.btn-activate{background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff}
-.btn-activate.on{background:linear-gradient(135deg,#16A34A,#22C55E)}
-.chip{font-size:12px;color:var(--muted);text-align:center;margin:6px 0 16px}
-.tab{display:none}.tab.active{display:block}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:12px;overflow:hidden}
-.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
-.card-head h3{font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
-.card-head .act{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hero .edit{
+  width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);border:none;color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s;flex-shrink:0;
+}
+.hero .edit:active{transform:scale(.9)}
+.hero .edit svg{width:16px;height:16px}
+
+/* ===== PRIMARY BUTTON ===== */
+.btn-primary{
+  width:100%;padding:15px;border:none;border-radius:var(--r-md);cursor:pointer;
+  font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:transform .15s, box-shadow .18s, background .18s;
+  position:relative;overflow:hidden;margin-bottom:6px;
+}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary svg{width:19px;height:19px}
+.btn-activate{
+  background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;box-shadow:var(--sh-pri);
+  animation:breathe 2.6s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{box-shadow:0 6px 16px rgba(15,118,110,.25)}50%{box-shadow:0 10px 26px rgba(15,118,110,.45)}}
+.btn-activate.on{background:linear-gradient(135deg,#16A34A,#22C55E);animation:none;box-shadow:0 6px 18px rgba(22,163,74,.30)}
+.chip{font-size:12px;color:var(--muted);text-align:center;margin:6px 0 16px;font-weight:500}
+
+/* ===== INSTALL BANNER ===== */
+#boxInstalar{
+  display:none;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px;
+  display:none;align-items:center;gap:12px;box-shadow:var(--sh-1);
+}
+#boxInstalar.show{display:flex;animation:slideIn .3s ease}
+#boxInstalar .ic{width:38px;height:38px;border-radius:10px;background:var(--warn-bg);color:var(--warn);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#boxInstalar .ic svg{width:20px;height:20px}
+#boxInstalar .txt{flex:1;min-width:0}
+#boxInstalar .txt b{font-size:13px;font-weight:700;display:block}
+#boxInstalar .txt small{font-size:11px;color:var(--muted)}
+#boxInstalar button{
+  background:var(--warn);color:#fff;border:none;border-radius:8px;padding:8px 12px;
+  font-size:12px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap;
+}
+#boxInstalar button:active{transform:scale(.94)}
+
+/* ===== TABS ===== */
+.tabs-wrap{position:relative}
+.tab{display:none;animation:fade .25s ease}
+.tab.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== CARDS ===== */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  margin-bottom:12px;overflow:hidden;box-shadow:var(--sh-1);
+}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;
+}
+.card-head h3{font-size:13px;font-weight:700;color:var(--text-2);letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+.card-head h3 svg{width:16px;height:16px;color:var(--pri)}
+.card-head .actions{display:flex;gap:6px}
+.card-head .act{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);
+  color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
+}
+.card-head .act:hover{border-color:var(--pri-3);color:var(--pri)}
+.card-head .act:active{transform:scale(.9)}
+.card-head .act svg{width:15px;height:15px}
 .card-body{padding:0 16px 14px}
+
+/* QR card */
 .qr-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
-#qr{width:170px;height:170px;border-radius:12px;padding:8px;background:#fff;border:1px solid var(--line)}
+#qr{
+  width:170px;height:170px;border-radius:12px;padding:8px;background:#fff;
+  border:1px solid var(--line-2);image-rendering:pixelated;box-shadow:var(--sh-2);
+}
 .qr-wrap .hint{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.45;max-width:280px}
-.btn-line{width:100%;padding:11px;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px}
-.list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #F1F5F9}
+.qr-wrap .hint b{color:var(--text-2)}
+
+/* ===== OVERLAY: QR em tela cheia (dentro do app) ===== */
+#qrFull{
+  display:none;position:fixed;inset:0;z-index:200;background:#fff;
+  align-items:center;justify-content:center;padding:24px;
+}
+#qrFull.show{display:flex}
+.qrFull-card{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:340px}
+.qrFull-logo{display:flex;align-items:center;gap:10px}
+.qrFull-logo .logo{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--pri),var(--pri-2));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:20px;box-shadow:var(--sh-pri);
+}
+.qrFull-logo b{font-size:23px;color:#0F172A;font-weight:800;letter-spacing:.2px}
+.qrFull-text{font-size:15px;color:#475569;text-align:center;line-height:1.5;max-width:290px}
+#qrBig{
+  width:260px;height:260px;border-radius:20px;padding:12px;background:#fff;
+  border:1px solid #E2E8F0;image-rendering:pixelated;
+  box-shadow:0 10px 30px rgba(15,23,42,.10);
+}
+.qrFull-close{
+  margin-top:4px;background:var(--pri);color:#fff;border:none;
+  padding:15px 32px;border-radius:14px;font-size:16px;font-weight:600;
+  cursor:pointer;width:100%;max-width:260px;font-family:inherit;
+  transition:transform .1s;
+}
+.qrFull-close:active{transform:scale(.97)}
+@media (max-width:360px){
+  #qrBig{width:220px;height:220px}
+}
+.btn-line{
+  width:100%;padding:11px;border:1px solid var(--line);background:var(--surface-2);
+  border-radius:var(--r-sm);font-size:13px;font-weight:600;color:var(--text-2);
+  cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s;
+}
+.btn-line:hover{border-color:var(--pri-3);color:var(--pri)}
+.btn-line:active{transform:scale(.98)}
+.btn-line svg{width:15px;height:15px}
+
+/* List (moradores, histórico) */
+.list{}
+.list-item{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line-2);
+}
 .list-item:first-child{border-top:none}
-.li-ic{width:36px;height:36px;border-radius:10px;background:#F0FDFA;color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.li-info{flex:1;min-width:0}.li-info b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.li-info small{font-size:12px;color:var(--muted)}
-.li-action{width:32px;height:32px;border:none;border-radius:8px;background:var(--err-bg);color:var(--err);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px}.badge.ok{background:var(--ok-bg);color:var(--ok)}.badge.err{background:var(--err-bg);color:var(--err)}
-.empty{text-align:center;padding:32px 16px;color:#94A3B8;font-size:13px}
-.settings-list button{width:100%;display:flex;align-items:center;gap:12px;padding:13px 16px;background:none;border:none;border-top:1px solid #F1F5F9;cursor:pointer;text-align:left}
+.list-item .li-ic{
+  width:36px;height:36px;border-radius:10px;background:var(--pri-50);color:var(--pri);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.list-item .li-ic svg{width:18px;height:18px}
+.list-item .li-info{flex:1;min-width:0}
+.list-item .li-info b{font-size:14px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item .li-info small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.list-item .li-action{
+  width:32px;height:32px;border-radius:8px;border:none;background:var(--err-bg);color:var(--err);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.15s;
+}
+.list-item .li-action:hover{background:var(--err-line)}
+.list-item .li-action:active{transform:scale(.9)}
+.list-item .li-action svg{width:15px;height:15px}
+.list-item .badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;flex-shrink:0}
+.list-item .badge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.list-item .badge.err{background:var(--err-bg);color:var(--err);border:1px solid var(--err-line)}
+
+.empty{
+  text-align:center;padding:32px 16px;color:var(--muted-2);font-size:13px;
+}
+.empty svg{width:40px;height:40px;margin:0 auto 10px;opacity:.4;display:block}
+
+/* Settings list */
+.settings-list{}
+.settings-list button{
+  width:100%;display:flex;align-items:center;gap:12px;padding:13px 16px;
+  background:none;border:none;border-top:1px solid var(--line-2);cursor:pointer;text-align:left;transition:.12s;
+}
 .settings-list button:first-child{border-top:none}
-.s-info{flex:1}.s-info b{font-size:14px;display:block}.s-info small{font-size:12px;color:var(--muted)}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.settings-list button:hover{background:var(--surface-2)}
+.settings-list button:active{background:var(--line-2)}
+.settings-list button .s-ic{
+  width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.settings-list button .s-ic svg{width:17px;height:17px}
+.settings-list button .s-ic.teal{background:var(--pri-50);color:var(--pri)}
+.settings-list button .s-ic.amber{background:var(--warn-bg);color:var(--warn)}
+.settings-list button .s-ic.blue{background:#EFF6FF;color:#2563EB}
+.settings-list button .s-ic.red{background:var(--err-bg);color:var(--err)}
+.settings-list button .s-info{flex:1;min-width:0}
+.settings-list button .s-info b{font-size:14px;font-weight:600;display:block}
+.settings-list button .s-info small{font-size:12px;color:var(--muted)}
+.settings-list button .chev{color:var(--muted-2);flex-shrink:0}
+.settings-list button .chev svg{width:16px;height:16px}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+}
 .bottom-nav .inner{max-width:480px;margin:0 auto;display:flex}
-.bottom-nav button{flex:1;background:none;border:none;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted)}
-.bottom-nav button.active{color:var(--pri)}.bottom-nav button small{font-size:10px;font-weight:600}
-.nav-credit{text-align:center;font-size:9px;color:var(--muted);padding-top:5px}
-#alerta{display:none;background:#fff;border:1px solid var(--err-line);border-radius:18px;padding:16px;margin-bottom:14px}
+.bottom-nav button{
+  flex:1;background:none;border:none;cursor:pointer;padding:6px 0;
+  display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);
+  transition:.15s;font-family:inherit;
+}
+.bottom-nav button svg{width:22px;height:22px;transition:.15s}
+.bottom-nav button small{font-size:10px;font-weight:600;letter-spacing:.2px}
+.bottom-nav button.active{color:var(--pri)}
+.bottom-nav button.active svg{transform:translateY(-1px)}
+.bottom-nav button.active::before{
+  content:"";position:absolute;margin-top:-8px;width:24px;height:3px;border-radius:100px;background:var(--pri);
+}
+.bottom-nav button:active{transform:scale(.92)}
+.nav-credit{text-align:center;font-size:9px;color:var(--muted);letter-spacing:.3px;padding-top:5px;opacity:.65;font-weight:500}
+
+/* ===== ALERT (inline, kept) ===== */
+#alerta{
+  display:none;background:var(--surface);border:1px solid var(--err-line);
+  border-radius:var(--r-lg);padding:16px;margin-bottom:14px;box-shadow:var(--sh-3);animation:fade .25s ease;
+}
+#alerta .top-row{display:flex;align-items:center;gap:12px}
+#alerta .bell-big{
+  width:48px;height:48px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--err),#F87171);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  animation:shake .9s ease-in-out infinite;box-shadow:0 8px 18px rgba(220,38,38,.35);
+}
+#alerta .bell-big svg{width:24px;height:24px}
+@keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}}
+#alerta .ttl{font-size:15px;font-weight:700;color:var(--text)}
+#alerta .sub{font-size:12px;color:var(--muted);margin-top:1px}
 #alerta .botoes{display:flex;gap:8px;margin-top:14px}
-#alerta button{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;color:#fff;cursor:pointer}
-#alerta .recusar{background:var(--err)}#alerta .atender{background:var(--ok)}
-#video{width:100%;aspect-ratio:4/3;background:#000;border-radius:18px;display:none;object-fit:cover}
-#videoLocal{position:absolute;top:8px;right:8px;width:30%;max-width:130px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:2px solid #fff;display:none;background:#000}
+#alerta button{flex:1;padding:12px;border:none;border-radius:var(--r-sm);font-weight:700;color:#fff;cursor:pointer;font-size:13px;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+#alerta button:active{transform:scale(.97)}
+#alerta button svg{width:15px;height:15px}
+#alerta .recusar{background:var(--err)}
+#alerta .atender{background:var(--ok);box-shadow:0 6px 14px rgba(22,163,74,.25)}
+
+/* ===== VIDEO ===== */
+.call-stage{position:relative;width:100%;margin-bottom:14px}
+#video{width:100%;aspect-ratio:4/3;background:#000;border-radius:var(--r-lg);display:none;object-fit:cover;border:1px solid var(--line)}
+#videoLocal{position:absolute;top:8px;right:8px;width:30%;max-width:130px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,.92);box-shadow:0 4px 12px rgba(0,0,0,.25);display:none;background:#000;z-index:5;transform:scaleX(-1)}
 #videoLocal.show{display:block}
-.call-stage{position:relative;margin-bottom:14px}
-#falando{display:none;text-align:center;font-size:12px;font-weight:600;color:var(--ok);margin-bottom:10px;background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:10px;padding:8px}
-.ctrl-row{display:none;gap:14px;justify-content:center;margin-bottom:14px}.ctrl-row.show{display:flex}
-.btn-ctrl{width:56px;height:56px;border-radius:50%;border:none;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#videoLocal.hidden{display:none}
+#falando{display:none;text-align:center;font-size:12px;font-weight:600;color:var(--ok);margin-bottom:10px;background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:var(--r-sm);padding:8px}
+#dbg{display:none;text-align:center;font:11px/1.5 monospace;color:#fff;background:#1e293b;border-radius:var(--r-sm);padding:6px 8px;margin-bottom:10px;word-break:break-all}
+.ctrl-row{display:none;gap:14px;justify-content:center;margin-bottom:14px}
+.ctrl-row.show{display:flex}
+.btn-ctrl{width:56px;height:56px;border-radius:50%;border:none;background:#fff;color:#334155;box-shadow:0 4px 12px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .1s,background .2s}
+.btn-ctrl:active{transform:scale(.92)}
 .btn-ctrl.off{background:#ef4444;color:#fff}
-#btnEncerrar{display:none;background:var(--err);color:#fff;margin-bottom:14px}
-#modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:99;align-items:flex-end;justify-content:center}
-#modal .box{background:#fff;border-radius:22px 22px 0 0;padding:20px;width:100%;max-width:480px}
-#modal input{width:100%;padding:13px;border:1px solid var(--line);border-radius:14px;margin-top:8px;font-size:15px;background:var(--surface-2)}
+.btn-ctrl svg{width:24px;height:24px}
+#btnEncerrar{display:none;background:var(--err);color:#fff;margin-bottom:14px;box-shadow:0 6px 16px rgba(220,38,38,.25)}
+
+/* ===== MODAL BOTTOM SHEET ===== */
+#modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:99;align-items:flex-end;justify-content:center}
+#modal .box{
+  background:var(--surface);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  width:100%;max-width:480px;animation:subir .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes subir{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#modal .grip{width:36px;height:4px;background:var(--line);border-radius:100px;margin:0 auto 14px}
+#modal h3{font-size:16px;font-weight:700;margin-bottom:2px}
+#modal .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+#modal input{
+  width:100%;padding:13px;border:1px solid var(--line);border-radius:var(--r-md);margin-top:8px;font-size:15px;background:var(--surface-2);
+  transition:border-color .18s, box-shadow .18s;font-family:inherit;
+}
+#modal input:first-of-type{margin-top:0}
+#modal input:focus{outline:none;border-color:var(--pri-2);box-shadow:0 0 0 4px rgba(20,184,166,.15);background:#fff}
 #modal .btn-row{display:flex;gap:8px;margin-top:14px}
-#modal .btn-row button{flex:1;padding:13px;border:none;border-radius:14px;font-weight:700;cursor:pointer}
-#modal .btn-save{background:var(--pri);color:#fff}#modal .btn-cancel{background:var(--surface-2)}
-#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:#fff;padding:11px 18px;border-radius:100px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:200}
-#toast.show{opacity:1}
-#callOverlay{display:none;position:fixed;inset:0;z-index:150;background:linear-gradient(180deg,#0F172A,#1E293B);flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:24px}
-#callOverlay .ring{width:130px;height:130px;border-radius:50%;background:linear-gradient(135deg,var(--err),#F87171);display:flex;align-items:center;justify-content:center}
-#callOverlay h2{font-size:22px;margin-top:24px}#callOverlay p{font-size:13px;opacity:.7;margin-top:6px}
+#modal .btn-row button{flex:1;padding:13px;border:none;border-radius:var(--r-md);font-weight:700;cursor:pointer;font-size:14px;transition:.15s;font-family:inherit}
+#modal .btn-save{background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;box-shadow:var(--sh-pri)}
+#modal .btn-cancel{background:var(--surface-2);color:var(--text-2);border:1px solid var(--line)}
+#modal .btn-row button:active{transform:scale(.97)}
+
+/* ===== TOAST ===== */
+#toast{
+  position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:#fff;padding:11px 18px;border-radius:100px;font-size:13px;font-weight:600;
+  opacity:0;pointer-events:none;transition:.3s;z-index:200;box-shadow:var(--sh-3);max-width:90vw;text-align:center;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== FULLSCREEN CALL OVERLAY ===== */
+#callOverlay{
+  display:none;position:fixed;inset:0;z-index:150;
+  background:linear-gradient(180deg,#0F172A,#1E293B);
+  flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:24px;animation:fade .3s ease;
+}
+#callOverlay .ring{
+  width:130px;height:130px;border-radius:50%;
+  background:linear-gradient(135deg,var(--err),#F87171);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 0 rgba(220,38,38,.55);animation:bigPulse 1s infinite;
+}
+@keyframes bigPulse{0%{box-shadow:0 0 0 0 rgba(220,38,38,.55)}70%{box-shadow:0 0 0 30px rgba(220,38,38,0)}100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}}
+#callOverlay .ring svg{width:60px;height:60px;color:#fff}
+#callOverlay h2{font-size:22px;font-weight:800;margin-top:24px;text-align:center}
+#callOverlay p{font-size:13px;opacity:.7;margin-top:6px}
 #callOverlay .acts{display:flex;gap:24px;margin-top:38px}
-#callOverlay .acts button{width:68px;height:68px;border-radius:50%;border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-#callOverlay .decl{background:var(--err)}#callOverlay .acc{background:var(--ok)}
-#qrFull{display:none;position:fixed;inset:0;z-index:200;background:#fff;align-items:center;justify-content:center;padding:24px}
-#qrFull.show{display:flex}.qrFull-card{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:340px}
-#qrBig{width:260px;height:260px;border-radius:20px;padding:12px;border:1px solid #E2E8F0}
-.qrFull-close{margin-top:4px;background:var(--pri);color:#fff;border:none;padding:15px 32px;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;width:100%}
-#ativacao{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;align-items:center;overflow-y:auto;padding:20px 16px}
-#ativacao.show{display:flex}
-.atv-card{width:100%;max-width:420px;background:#fff;border-radius:18px;padding:24px 20px;margin-bottom:14px}
-.atv-head{text-align:center}.atv-head h2{font-size:20px;margin-bottom:6px}.atv-head p{font-size:13px;color:var(--muted)}
-.atv-valor{text-align:center;background:#F0FDFA;border:1px solid #CCFBF1;border-radius:14px;padding:14px;margin:16px 0}
-.atv-valor .v{font-size:28px;font-weight:800;color:var(--pri)}
-.atv-qr{text-align:center}.atv-qr img{width:220px;height:220px;border-radius:14px;border:1px solid var(--line);padding:8px}
-.atv-copia{display:flex;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:14px 0}
-.atv-copia code{flex:1;font-size:11px;word-break:break-all}.atv-copia button{border:none;background:var(--pri);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer}
-.atv-botoes{display:flex;flex-direction:column;gap:10px}.atv-botoes button{width:100%;padding:14px;border:none;border-radius:14px;font-weight:700;cursor:pointer}
-.b-home{background:#fff;border:1px solid var(--line)!important}.b-paguei{background:var(--ok);color:#fff}.b-nao{background:#fff;color:var(--err);border:1px solid var(--err-line)!important}
-.atv-chave input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:14px;text-transform:uppercase;margin-top:8px}
-.btn-chave{width:100%;margin-top:8px;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:14px;font-weight:700;cursor:pointer}
-#rotate{display:none;position:fixed;inset:0;z-index:9999;background:#0F172A;color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
-@media (orientation:landscape) and (max-height:480px){#rotate{display:flex}.app,.bottom-nav{display:none}}
+#callOverlay .acts button{
+  width:68px;height:68px;border-radius:50%;border:none;cursor:pointer;color:#fff;
+  display:flex;align-items:center;justify-content:center;transition:transform .15s;
+}
+#callOverlay .acts button:active{transform:scale(.9)}
+#callOverlay .acts button svg{width:28px;height:28px}
+#callOverlay .acts .decl{background:linear-gradient(135deg,var(--err),#B91C1C);box-shadow:0 10px 24px rgba(220,38,38,.4)}
+#callOverlay .acts .acc{background:linear-gradient(135deg,var(--ok),#15803D);box-shadow:0 10px 24px rgba(22,163,74,.4)}
+
+/* ripple */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.45);transform:scale(0);animation:rip .55s linear;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+
+/* ===== RESPONSIVE: tablet/desktop (phone-frame look) ===== */
+@media (min-width: 600px){
+  body{
+    background:radial-gradient(ellipse 70% 55% at 50% 0%, #CCFBF1 0%, #F1F5F9 62%);
+    padding-top:32px;
+    padding-bottom:calc(124px + env(safe-area-inset-bottom));
+  }
+  .app{
+    background:var(--bg);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 30px 80px rgba(15,23,42,.16), 0 0 0 1px rgba(15,23,42,.05);
+    padding-bottom:24px;
+  }
+  header{position:static;padding-top:18px}
+  .bottom-nav{
+    left:50%;right:auto;transform:translateX(-50%);
+    width:calc(100% - 28px);max-width:452px;
+    border-radius:20px;border:1px solid var(--line);
+    bottom:28px;box-shadow:0 12px 32px rgba(15,23,42,.12);
+  }
+  .bottom-nav .inner{max-width:none}
+  #toast{bottom:calc(116px + env(safe-area-inset-bottom))}
+  #modal .box{max-width:452px}
+  .hero{margin-bottom:16px}
+}
+@media (min-width: 900px){
+  .app{max-width:520px}
+  .bottom-nav{max-width:492px}
+  #modal .box{max-width:492px}
+}
+/* tela muito estreita: garante nada espremido */
+@media (max-width: 360px){
+  .hero .info h2{font-size:16px}
+  #qr{width:150px;height:150px}
+  .grid{gap:8px}
+  .card-head{padding:12px 12px 8px}
+  .card-body{padding:0 12px 12px}
+}
+
+/* ===== OVERLAY: girar celular (paisagem) ===== */
+#rotate{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(180deg,#0F172A,#1E293B);
+  flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;text-align:center;padding:32px;gap:18px;
+}
+#rotate svg{width:72px;height:72px;color:var(--pri-3);animation:rot 1.6s ease-in-out infinite}
+#rotate p{font-size:22px;font-weight:700;letter-spacing:.3px}
+#rotate small{font-size:14px;color:#94A3B8}
+@keyframes rot{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
+/* só aparece em paisagem com altura curta (celular deitado) — não em desktop */
+@media (orientation:landscape) and (max-height:480px){
+  #rotate{display:flex}
+  .app,.bottom-nav{display:none}
+}
 </style>
 </head>
 <body>
-<div id="rotate"><p>Gire o celular</p><small>Use o PortaLink na vertical</small></div>
+<div id="rotate">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 4v5h-5"/></svg>
+  <p>Gire o celular</p>
+  <small>Use o PortaLink na vertical</small>
+</div>
 <div class="app">
+
+  <!-- HEADER -->
   <header>
-    <div class="brand"><div class="logo">P</div><div><b>PortaLink</b><br><small>Morador · Online</small></div></div>
-    <button class="icon-btn" onclick="abrirQR()" aria-label="Ver QR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z M21 14v3 M14 21h3 M21 21v.01"/></svg></button>
+    <div class="brand">
+      <div class="logo">P</div>
+      <div class="name">
+        <b>PortaLink</b>
+        <small id="onlineTag">Morador · Online</small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="abrirQR()" aria-label="Ver QR">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z M21 14v3 M14 21h3 M21 21v.01"/></svg>
+      </button>
+    </div>
   </header>
 
-  <!-- SELO SEMPRE VISÍVEL -->
-  <div id="trialBanner">
-    <div id="trialSeal"><span class="dot"></span><span id="trialSealTxt">TRIAL GRÁTIS • 7 DIAS</span></div>
-    <button id="trialBtn" onclick="abrirAtivacao()">ATIVAR AGORA — R$ 29,90 / MÊS</button>
-  </div>
-
+  <!-- HERO STATUS -->
   <section class="hero">
     <div class="hero-row">
-      <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-      <div class="info"><div class="label">Interfone</div><h2 id="tituloCasa">Minha Casa</h2><p id="enderecoTexto">Aguardando visitante…</p></div>
-      <button class="edit" onclick="editarEndereco()">✎</button>
+      <div class="ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="info">
+        <div class="label">Interfone</div>
+        <h2 id="tituloCasa">Minha Casa</h2>
+        <p id="enderecoTexto">Aguardando visitante…</p>
+      </div>
+      <button class="edit" onclick="editarEndereco()" aria-label="Editar endereço">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
     </div>
   </section>
 
-  <button class="btn-primary btn-activate" id="btnSom" onclick="liberarSom()"><span id="btnSomTxt">Ativar interfone</span></button>
+  <!-- PRIMARY BUTTON -->
+  <button class="btn-primary btn-activate" id="btnSom" onclick="liberarSom()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span id="btnSomTxt">Ativar interfone</span>
+  </button>
   <p class="chip" id="subStatus">Toque para ativar — depois funciona sozinho.</p>
 
-  <div id="alerta"><div><b>Visitante chamando</b><p id="nomeChamando">Chamada recebida</p></div><div class="botoes"><button class="recusar" onclick="recusar()">Recusar</button><button class="atender" onclick="atender()">Atender</button></div></div>
-
-  <div class="call-stage"><video id="video" autoplay playsinline></video><video id="videoLocal" autoplay playsinline muted></video></div>
-  <p id="falando">Conversando</p>
-  <div class="ctrl-row" id="ctrlRow"><button class="btn-ctrl" id="btnMic" onclick="toggleMic()">Mic</button><button class="btn-ctrl" id="btnCam" onclick="toggleCam()">Cam</button></div>
-  <button class="btn-primary" id="btnEncerrar" onclick="encerrar()">Encerrar chamada</button>
-
-  <div class="tab active" id="tab-casa">
-    <div class="card"><div class="card-head"><h3>QR da porta</h3><button class="act" onclick="baixarKit()">↓</button></div>
-      <div class="card-body"><div class="qr-wrap"><img id="qr" src="" onclick="abrirQR()"><div class="hint">Cole na porta. O visitante <b>escaneia com a câmera</b> — sem bater, sem tocar campainha.</div><button class="btn-line" onclick="abrirQR()">Abrir QR em tela cheia</button></div></div>
+  <!-- INSTALL BANNER -->
+  <div id="boxInstalar">
+    <div class="ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     </div>
-    <div class="card"><div class="card-head"><h3>Moradores</h3><button class="act" onclick="abrirMorador()">+</button></div><div style="padding:0"><div id="listaMoradores" class="list"></div></div></div>
+    <div class="txt"><b>Instalar app</b><small>Ícone na tela inicial, toque mesmo offline</small></div>
+    <button onclick="instalarApp()">Instalar</button>
   </div>
 
-  <div class="tab" id="tab-historico"><div class="card"><div class="card-head"><h3>Histórico de chamadas</h3></div><div style="padding:0"><div id="listaHistorico" class="list"></div></div></div></div>
+  <!-- ALERTA INLINE (kept) -->
+  <div id="alerta">
+    <div class="top-row">
+      <div class="bell-big">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div>
+        <div class="ttl">Visitante chamando</div>
+        <p class="sub" id="nomeChamando">Chamada recebida</p>
+      </div>
+    </div>
+    <div class="botoes">
+      <button class="recusar" onclick="recusar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Recusar
+      </button>
+      <button class="atender" onclick="atender()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Atender
+      </button>
+    </div>
+  </div>
 
-  <div class="tab" id="tab-ajustes">
-    <div class="card"><div class="card-head"><h3>Geral</h3></div><div class="settings-list">
-      <button onclick="testarChamada()"><div class="s-info"><b>Testar toque</b><small>Toca o som do interfone agora</small></div><span>›</span></button>
-      <button onclick="instalarApp()"><div class="s-info"><b>Instalar como app</b><small>Ícone na tela inicial</small></div><span>›</span></button>
-    </div></div>
-    <div class="card"><div class="card-head"><h3>Dados</h3></div><div class="settings-list">
-      <button onclick="editarEndereco()"><div class="s-info"><b>Editar endereço</b><small>Rua, número, bairro</small></div><span>›</span></button>
-      <button onclick="abrirMorador()"><div class="s-info"><b>Adicionar morador</b><small>Quem mora na casa</small></div><span>›</span></button>
-      <button onclick="excluirEndereco()"><div class="s-info"><b>Apagar tudo</b><small>Endereço, moradores, histórico</small></div><span>›</span></button>
-    </div></div>
-    <div class="card"><div class="card-body"><p style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6"><b>PortaLink</b> · Interfone inteligente sem fio e sem obra.</p></div></div>
+  <div class="call-stage">
+    <video id="video" autoplay playsinline></video>
+    <video id="videoLocal" autoplay playsinline muted></video>
+  </div>
+  <p id="falando">🎙️ Conversando</p>
+  <div id="dbg"></div>
+  <div class="ctrl-row" id="ctrlRow">
+    <button class="btn-ctrl" id="btnMic" onclick="toggleMic()" aria-label="Microfone"></button>
+    <button class="btn-ctrl" id="btnCam" onclick="toggleCam()" aria-label="Câmera"></button>
+  </div>
+  <button class="btn-primary" id="btnEncerrar" onclick="encerrar()">Encerrar chamada</button>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+
+    <!-- TAB: CASA -->
+    <div class="tab active" id="tab-casa">
+      <div class="card">
+        <div class="card-head">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z M21 14v3 M14 21h3 M21 21v.01"/></svg>
+            QR da porta
+          </h3>
+          <div class="actions">
+            <button class="act" onclick="baixarKit()" aria-label="Baixar QR">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="qr-wrap">
+            <img id="qr" src="" alt="QR Code" onclick="abrirQR()" style="cursor:pointer">
+            <div class="hint">Cole na porta. O visitante <b>escaneia com a câmera do celular</b> — sem bater, sem tocar campainha.</div>
+            <button class="btn-line" onclick="abrirQR()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              Abrir QR em tela cheia
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Moradores
+          </h3>
+          <div class="actions">
+            <button class="act" onclick="abrirMorador()" aria-label="Adicionar morador">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div id="listaMoradores" class="list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: HISTÓRICO -->
+    <div class="tab" id="tab-historico">
+      <div class="card">
+        <div class="card-head">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Histórico de chamadas
+          </h3>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div id="listaHistorico" class="list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: AJUSTES -->
+    <div class="tab" id="tab-ajustes">
+      <div class="card">
+        <div class="card-head"><h3>Geral</h3></div>
+        <div class="settings-list">
+          <button onclick="testarChamada()">
+            <div class="s-ic amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="14" x2="15" y2="14"/></svg></div>
+            <div class="s-info"><b>Testar toque</b><small>Toca o som do interfone agora</small></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+          <button onclick="instalarApp()">
+            <div class="s-ic blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <div class="s-info"><b>Instalar como app</b><small>Ícone na tela inicial</small></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Dados</h3></div>
+        <div class="settings-list">
+          <button onclick="editarEndereco()">
+            <div class="s-ic teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="s-info"><b>Editar endereço</b><small>Rua, número, bairro</small></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+          <button onclick="abrirMorador()">
+            <div class="s-ic teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+            <div class="s-info"><b>Adicionar morador</b><small>Quem mora na casa</small></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+          <button onclick="excluirEndereco()">
+            <div class="s-ic red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+            <div class="s-info"><b>Apagar tudo</b><small>Endereço, moradores, histórico</small></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;text-align:center">
+            <b style="color:var(--text-2)">PortaLink</b> · Interfone inteligente sem fio e sem obra.<br>
+            Toque sintetizado · Wake Lock · Notificações
+          </p>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<nav class="bottom-nav"><div class="inner">
-  <button class="active" data-tab="casa" onclick="switchTab('casa')">🏠<small>Casa</small></button>
-  <button data-tab="historico" onclick="switchTab('historico')">🕒<small>Histórico</small></button>
-  <button data-tab="ajustes" onclick="switchTab('ajustes')">⚙️<small>Ajustes</small></button>
-</div><div class="nav-credit">© 2026 · Elias Costa Negret's — Direitos reservados</div></nav>
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="inner">
+    <button class="active" data-tab="casa" onclick="switchTab('casa')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <small>Casa</small>
+    </button>
+    <button data-tab="historico" onclick="switchTab('historico')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <small>Histórico</small>
+    </button>
+    <button data-tab="ajustes" onclick="switchTab('ajustes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <small>Ajustes</small>
+    </button>
+  </div>
+  <div class="nav-credit">© 2026 · Elias Costa Negret's — Direitos reservados</div>
+</nav>
 
-<div id="modal"><div class="box"><h3 id="modalTitulo">Adicionar morador</h3><p id="modalSub" style="font-size:12px;color:var(--muted);margin:4px 0 10px">Preencha os dados</p><input id="input1" placeholder="Nome do morador"><input id="input2" placeholder="Telefone / Obs (opcional)"><div class="btn-row"><button class="btn-cancel" onclick="fecharModal()">Cancelar</button><button class="btn-save" onclick="salvarModal()">Salvar</button></div></div></div>
-<div id="callOverlay"><div class="ring">🔔</div><h2 id="overlayNome">Visitante</h2><p>está chamando no seu interfone</p><div class="acts"><button class="decl" onclick="recusar()">✕</button><button class="acc" onclick="atender()">✓</button></div></div>
-<div id="toast"></div>
-<div id="qrFull"><div class="qrFull-card"><b style="font-size:23px">PortaLink</b><p style="text-align:center;color:#475569">Aponte a câmera para o QR para chamar</p><img id="qrBig"><button class="qrFull-close" onclick="fecharQR()">Fechar</button></div></div>
-
-<!-- TELA ATIVAÇÃO -->
-<div id="ativacao"><div class="atv-card">
-  <div class="atv-head"><h2>Ativar PortaLink</h2><p>Continue usando sem travar</p></div>
-  <div class="atv-valor"><div style="font-size:11px;color:var(--muted)">MENSAL</div><div class="v">R$ 29,90</div><div style="font-size:12px;color:var(--muted)">30 dias • Pix</div></div>
-  <div class="atv-qr"><img id="atvQrImg" src=""><div id="atvQrLoad" style="padding:20px;color:var(--muted)">Gerando Pix…</div></div>
-  <div class="atv-copia"><code id="atvCopia">—</code><button onclick="copiarPix()">Copiar</button></div>
-  <div class="atv-chave"><label>Tem chave de ativação?</label><input id="atvChave" placeholder="PO0L-XXXX"><button class="btn-chave" onclick="ativarComChave()">Ativar com chave</button></div>
-  <div id="atvMsg" style="display:none;text-align:center;padding:10px;border-radius:10px;margin-bottom:10px"></div>
-  <div class="atv-botoes"><button class="b-paguei" onclick="verificarPagamento()">Já paguei — verificar</button><button class="b-home" onclick="fecharAtivacao()">Voltar para o app</button></div>
+<!-- MODAL -->
+<div id="modal"><div class="box">
+  <div class="grip"></div>
+  <h3 id="modalTitulo">Adicionar morador</h3>
+  <p class="sub" id="modalSub">Preencha os dados abaixo</p>
+  <input id="input1" placeholder="Nome do morador">
+  <input id="input2" placeholder="Telefone / Obs (opcional)">
+  <div class="btn-row">
+    <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+    <button class="btn-save" onclick="salvarModal()">Salvar</button>
+  </div>
 </div></div>
+
+<!-- CALL OVERLAY -->
+<div id="callOverlay">
+  <div class="ring">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  </div>
+  <h2 id="overlayNome">Visitante</h2>
+  <p>está chamando no seu interfone</p>
+  <div class="acts">
+    <button class="decl" onclick="recusar()" aria-label="Recusar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="acc" onclick="atender()" aria-label="Atender">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<audio id="alarme" loop preload="auto" playsinline muted src="https://cdn.pixabay.com/audio/2022/03/10/audio_2c8c247e28.mp3"></audio>
+
+<div id="qrFull">
+  <div class="qrFull-card">
+    <div class="qrFull-logo">
+      <div class="logo">P</div>
+      <b>PortaLink</b>
+    </div>
+    <p class="qrFull-text">Aponte a câmera do celular para o QR para chamar o interfone</p>
+    <img id="qrBig" alt="QR Code">
+    <button class="qrFull-close" onclick="fecharQR()">Fechar</button>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <script>
-const db = dbRT;
-let dbStore = null;
-try{ if(window.firebase && window.PORTALINK_FIREBASE_CONFIG){ if(!firebase.apps.length) firebase.initializeApp(window.PORTALINK_FIREBASE_CONFIG); dbStore = firebase.firestore(); } }catch(e){}
-const urlParams = new URLSearchParams(location.search);
-let CASA_ID = urlParams.get('casa') || localStorage.getItem('portalink_casaId') || '';
-if(!CASA_ID){ CASA_ID = 'casa-' + Math.random().toString(36).slice(2,8).toUpperCase(); }
-localStorage.setItem('portalink_casaId', CASA_ID);
-let pc=null, atendido=false, jaAtivou=false, deferredPrompt=null, modoModal='morador', localStream=null, wakeLock=null, pagamentoId=null, audioCtx=null, doorbellTimer=null;
+/* ============================================================
+   PortaLink Morador — UI profissional (app nativo).
+   Firebase / WebRTC / localStorage / DB paths: preservados.
+============================================================ */
+const firebaseConfig={apiKey:"AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",authDomain:"doorvi-video.firebaseapp.com",databaseURL:"https://doorvi-video-default-rtdb.firebaseio.com",projectId:"doorvi-video",storageBucket:"doorvi-video.firebasestorage.app",messagingSenderId:"869461304542",appId:"1:869461304542:web:35fffbe8fb1b2a00a38e4f"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+/* Messaging — push mesmo com app fechado. Troque a VAPID pela sua
+   (Firebase Console > Project Settings > Cloud Messaging > Web Push > Generate). */
+const VAPID='COLE_AQUI_SUA_VAPID_KEY';
+let messaging=null;
+try{ if(firebase.messaging && 'serviceWorker' in navigator){ messaging=firebase.messaging(); } }catch(e){}
+async function salvarTokenFCM(){
+  if(!messaging) return;
+  try{
+    const token=await messaging.getToken({vapidKey:VAPID});
+    if(token){ await db.ref('moradorToken').set(token); console.log('[FCM] token salvo'); }
+  }catch(e){ console.warn('[FCM] getToken falhou',e); }
+}
+try{ if(messaging && typeof messaging.onTokenRefresh==='function'){ messaging.onTokenRefresh(()=>salvarTokenFCM()); } }catch(e){}
+/* ---------- ICE / TURN ----------
+   STUN so resolve NAT normal (WiFi). Redes moveis (4G/5G) usam CGNAT —
+   so um servidor TURN (que retransmite a midia) consegue atravessar.
+   Default: OpenRelay gratuito (static-auth HMAC, sem cadastro).
+   Pra TURN mais robusto: cadastre-se gratis em metered.ca (20GB/mes),
+   cole TURN_METERED_KEY + TURN_METERED_APP abaixo. */
+const TURN_METERED_KEY='';   // ex: 'a1b2c3...' (deixe vazio = usa OpenRelay gratuito)
+const TURN_METERED_APP='';   // ex: 'portalink' (nome do app no Metered)
+async function getIceServers(){
+  const stun=[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:stun2.l.google.com:19302"}];
+  try{
+    if(TURN_METERED_KEY){
+      const r=await fetch(`https://${TURN_METERED_APP||'app'}.metered.live/api/v1/turn/credentials?apiKey=${TURN_METERED_KEY}`);
+      if(r.ok){const j=await r.json();if(j.iceServers)return{iceServers:[...stun,...j.iceServers]};}
+    }
+    // OpenRelay static-auth: gera credencial HMAC-SHA1 time-limited (valida 1h)
+    const secret="openrelayprojectsecret",exp=Math.floor(Date.now()/1000)+3600,user=exp+":portalink";
+    const enc=new TextEncoder();
+    const k=await crypto.subtle.importKey("raw",enc.encode(secret),{name:"HMAC",hash:"SHA-1"},false,["sign"]);
+    const sig=await crypto.subtle.sign("HMAC",k,enc.encode(user));
+    const cred=btoa(String.fromCharCode(...new Uint8Array(sig)));
+    return{iceServers:[...stun,{username:user,credential:cred,urls:["turn:staticauth.openrelay.metered.ca:80","turn:staticauth.openrelay.metered.ca:443","turn:staticauth.openrelay.metered.ca:443?transport=tcp"]}]};
+  }catch(e){console.warn('[ICE] TURN falhou, usando so STUN:',e);return{iceServers:stun};}
+}
+let pc=null,atendido=false,jaAtivou=false,deferredPrompt=null,modoModal='morador',wakeLock=null,localStream=null;
 
-console.log('conectado firebase:', window.PORTALINK_FIREBASE_CONFIG ? window.PORTALINK_FIREBASE_CONFIG.projectId : 'sem-config', CASA_ID);
-
+/* ---------- TABS ---------- */
 function switchTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  const el=document.getElementById('tab-'+name);
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===name);
+  });
   if(name==='historico') carregarHistorico();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function toast(m){ const t=document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
+function verHistorico(){switchTab('historico');}
 
-/* QR */
-document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(location.origin+"/eu.html?casa="+CASA_ID);
-function baixarKit(){ const a=document.createElement('a'); a.href=document.getElementById('qr').src; a.download='qrcode-portalink.png'; a.click(); toast('QR baixado'); }
-function abrirQR(){ document.getElementById('qrBig').src=document.getElementById('qr').src; document.getElementById('qrFull').classList.add('show'); }
-function fecharQR(){ document.getElementById('qrFull').classList.remove('show'); }
+/* ---------- QR ---------- */
+document.getElementById('qr').src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(location.origin+"/");
+function baixarKit(){let l=document.createElement('a');l.href=document.getElementById('qr').src;l.download='qrcode-portalink.png';l.click();toast('QR baixado — imprima e cole na porta.');}
+/* QR em tela cheia — DENTRO do app (não abre site externo).
+   Copia o src do #qr pro #qrBig e mostra o overlay. */
+function abrirQR(){
+  document.getElementById('qrBig').src=document.getElementById('qr').src;
+  document.getElementById('qrFull').classList.add('show');
+  try{liberarSom();}catch(e){}
+}
+function fecharQR(){document.getElementById('qrFull').classList.remove('show');}
 
-/* MODAL MORADOR / ENDEREÇO */
-function abrirMorador(){ modoModal='morador'; document.getElementById('modalTitulo').innerText='Adicionar morador'; document.getElementById('input1').value=''; document.getElementById('input2').value=''; document.getElementById('modal').style.display='flex'; }
-function editarEndereco(){ modoModal='endereco'; document.getElementById('modalTitulo').innerText='Editar endereço'; document.getElementById('input1').value=localStorage.getItem('portalink_endereco')||''; document.getElementById('input2').value=localStorage.getItem('portalink_bairro')||''; document.getElementById('modal').style.display='flex'; }
-function fecharModal(){ document.getElementById('modal').style.display='none'; }
+/* ---------- MODAL ---------- */
+function abrirMorador(){
+  modoModal='morador';
+  document.getElementById('modalTitulo').innerText='Adicionar morador';
+  document.getElementById('modalSub').innerText='Quem mais mora na casa?';
+  document.getElementById('input1').placeholder='Nome do morador';
+  document.getElementById('input1').value='';
+  document.getElementById('input2').placeholder='Telefone / Obs (opcional)';
+  document.getElementById('input2').value='';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>document.getElementById('input1').focus(),350);
+}
+function editarEndereco(){
+  modoModal='endereco';
+  document.getElementById('modalTitulo').innerText='Editar endereço';
+  document.getElementById('modalSub').innerText='Onde fica sua casa?';
+  document.getElementById('input1').placeholder='Rua, número, apto';
+  document.getElementById('input1').value=localStorage.getItem('portalink_endereco')||'';
+  document.getElementById('input2').placeholder='Bairro / Cidade';
+  document.getElementById('input2').value=localStorage.getItem('portalink_bairro')||'';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>document.getElementById('input1').focus(),350);
+}
 function salvarModal(){
-  const v1=document.getElementById('input1').value.trim(), v2=document.getElementById('input2').value.trim();
-  if(!v1){ toast('Preencha o primeiro campo'); return; }
-  if(modoModal==='morador'){ const l=JSON.parse(localStorage.getItem('portalink_moradores')||'[]'); l.push({nome:v1,obs:v2}); localStorage.setItem('portalink_moradores',JSON.stringify(l)); mostrarMoradores(); toast('Morador adicionado'); }
-  else{ localStorage.setItem('portalink_endereco',v1); localStorage.setItem('portalink_bairro',v2); mostrarEndereco(); toast('Endereço salvo'); }
+  let v1=document.getElementById('input1').value.trim();
+  let v2=document.getElementById('input2').value.trim();
+  if(!v1){toast('Preencha o primeiro campo');return;}
+  if(modoModal==='morador'){
+    let lista=JSON.parse(localStorage.getItem('portalink_moradores')||'[]');
+    lista.push({nome:v1,obs:v2});
+    localStorage.setItem('portalink_moradores',JSON.stringify(lista));
+    mostrarMoradores();toast('Morador '+v1+' adicionado');
+  }else{
+    localStorage.setItem('portalink_endereco',v1);
+    localStorage.setItem('portalink_bairro',v2);
+    mostrarEndereco();toast('Endereço salvo');
+  }
   fecharModal();
 }
+function fecharModal(){document.getElementById('modal').style.display='none';}
+
+/* ---------- MORADORES / ENDEREÇO / HISTÓRICO ---------- */
 function mostrarMoradores(){
-  const lista=JSON.parse(localStorage.getItem('portalink_moradores')||'[]');
-  const el=document.getElementById('listaMoradores');
-  el.innerHTML = lista.length ? lista.map((m,i)=>`<div class="list-item"><div class="li-ic">👤</div><div class="li-info"><b>${esc(m.nome)}</b><small>${esc(m.obs||'Sem observação')}</small></div><button class="li-action" onclick="removerMorador(${i})">✕</button></div>`).join('') : '<div class="empty">Nenhum morador cadastrado</div>';
-}
-function removerMorador(i){ const l=JSON.parse(localStorage.getItem('portalink_moradores')||'[]'); l.splice(i,1); localStorage.setItem('portalink_moradores',JSON.stringify(l)); mostrarMoradores(); }
-function mostrarEndereco(){ const e=localStorage.getItem('portalink_endereco'); if(e){ document.getElementById('tituloCasa').innerText=e; document.getElementById('enderecoTexto').innerText=(localStorage.getItem('portalink_bairro')||'')+' · Aguardando visitante'; } }
-function excluirEndereco(){ if(confirm('Apagar tudo?')){ ['portalink_endereco','portalink_bairro','portalink_moradores','portalink_historico'].forEach(k=>localStorage.removeItem(k)); document.getElementById('tituloCasa').innerText='Minha Casa'; mostrarMoradores(); carregarHistorico(); toast('Tudo apagado'); } }
-function carregarHistorico(){
-  const hist=JSON.parse(localStorage.getItem('portalink_historico')||'[]');
-  const el=document.getElementById('listaHistorico');
-  el.innerHTML = hist.length ? hist.slice(-30).reverse().map(h=>`<div class="list-item"><div class="li-ic">${h.status==='Atendida'?'📞':'✕'}</div><div class="li-info"><b>${esc(h.nome)}</b><small>${esc(h.data)}</small></div><span class="badge ${h.status==='Atendida'?'ok':'err'}">${esc(h.status)}</span></div>`).join('') : '<div class="empty">Nenhuma chamada ainda</div>';
-}
-function salvarHistorico(nome,status){ const h=JSON.parse(localStorage.getItem('portalink_historico')||'[]'); h.push({nome,status,data:new Date().toLocaleString('pt-BR')}); localStorage.setItem('portalink_historico',JSON.stringify(h)); }
-
-/* ATIVAÇÃO / FIRESTORE - MESMA COLEÇÃO DO ADMIN */
-function atualizarBanner(dados){
-  const banner=document.getElementById('trialBanner');
-  const seal=document.getElementById('trialSealTxt');
-  const btn=document.getElementById('trialBtn');
-  const agora=Date.now();
-  const status=dados?.status || 'trial';
-  const trialFim=dados?.trialFim || (agora + 7*24*60*60*1000);
-  const ativoAte=dados?.ativoAte || 0;
-  if(status==='ativo' && ativoAte > agora){
-    banner.className=''; banner.id='trialBanner'; banner.classList.add('ativo');
-    seal.textContent='ATIVO ATÉ '+new Date(ativoAte).toLocaleDateString('pt-BR');
-    btn.textContent='RENOVAR — R$ 29,90 / MÊS'; btn.style.background='var(--pri)';
-  } else if(status==='trial' || (status==='ativo' && ativoAte<=agora && trialFim>agora)){
-    const dias=Math.max(0, Math.ceil((trialFim-agora)/86400000));
-    seal.textContent='TRIAL GRÁTIS • '+dias+' DIA(S) RESTANTE(S)';
-    btn.textContent='ATIVAR AGORA — R$ 29,90 / MÊS';
-  } else {
-    banner.classList.add('encerrado');
-    seal.textContent='TRIAL ENCERRADO • ATIVE PARA CONTINUAR';
-    btn.textContent='ATIVAR AGORA — R$ 29,90 / MÊS';
+  let lista=JSON.parse(localStorage.getItem('portalink_moradores')||'[]');
+  let el=document.getElementById('listaMoradores');
+  if(!lista.length){
+    el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>Nenhum morador cadastrado</div>';
+    return;
   }
-  banner.style.display='flex';
+  el.innerHTML=lista.map((m,i)=>(
+    '<div class="list-item">'+
+      '<div class="li-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>'+
+      '<div class="li-info"><b>'+escapeHtml(m.nome)+'</b>'+(m.obs?'<small>'+escapeHtml(m.obs)+'</small>':'<small>Sem observação</small>')+'</div>'+
+      '<button class="li-action" onclick="removerMorador('+i+')" aria-label="Remover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
+    '</div>'
+  )).join('');
 }
-async function checarAtivacao(){
-  atualizarBanner({status:'trial', trialFim: Date.now()+7*86400000});
-  if(!dbStore){ console.log('[PORTALINK] Firestore não disponível, usando trial local'); return; }
+function removerMorador(i){
+  let lista=JSON.parse(localStorage.getItem('portalink_moradores')||'[]');
+  lista.splice(i,1);
+  localStorage.setItem('portalink_moradores',JSON.stringify(lista));
+  mostrarMoradores();toast('Morador removido');
+}
+function mostrarEndereco(){
+  let e=localStorage.getItem('portalink_endereco');
+  let b=localStorage.getItem('portalink_bairro');
+  if(e){
+    document.getElementById('tituloCasa').innerText=e;
+    document.getElementById('enderecoTexto').innerText=(b?b+' · ':'')+'Aguardando visitante';
+  }
+}
+function excluirEndereco(){
+  if(confirm('Apagar endereço, moradores e histórico?')){
+    localStorage.removeItem('portalink_endereco');
+    localStorage.removeItem('portalink_bairro');
+    localStorage.removeItem('portalink_moradores');
+    localStorage.removeItem('portalink_historico');
+    document.getElementById('tituloCasa').innerText='Minha Casa';
+    document.getElementById('enderecoTexto').innerText='Aguardando visitante…';
+    mostrarMoradores();carregarHistorico();toast('Tudo apagado');
+  }
+}
+function carregarHistorico(){
+  let el=document.getElementById('listaHistorico');
+  let hist=JSON.parse(localStorage.getItem('portalink_historico')||'[]');
+  if(!hist.length){
+    el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Nenhuma chamada ainda</div>';
+    return;
+  }
+  el.innerHTML=hist.slice(-30).reverse().map(h=>{
+    const ok=h.status==='Atendida';
+    const ic=ok
+      ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+      :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    return '<div class="list-item">'+
+      '<div class="li-ic" style="'+(ok?'':'background:var(--err-bg);color:var(--err)')+'">'+ic+'</div>'+
+      '<div class="li-info"><b>'+escapeHtml(h.nome)+'</b><small>'+h.data+'</small></div>'+
+      '<span class="badge '+(ok?'ok':'err')+'">'+h.status+'</span>'+
+    '</div>';
+  }).join('');
+}
+function verHistoricoLista(){carregarHistorico();}
+function salvarHistorico(nome,status){
+  let hist=JSON.parse(localStorage.getItem('portalink_historico')||'[]');
+  hist.push({nome:nome,status:status,data:new Date().toLocaleString('pt-BR')});
+  localStorage.setItem('portalink_historico',JSON.stringify(hist));
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ---------- TOAST ---------- */
+let toastT=null;
+function toast(msg){
+  let t=document.getElementById('toast');
+  t.innerText=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);
+}
+/* diagnostico visivel na tela durante a chamada (temporario p/ debug de video) */
+function dbg(msg){
+  const d=document.getElementById('dbg');
+  if(d){d.textContent=msg;d.style.display='block';console.log('[dbg]',msg);}
+}
+
+/* ---------- PWA install ---------- */
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('boxInstalar').classList.add('show');});
+async function instalarApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    let r=await deferredPrompt.userChoice;deferredPrompt=null;
+    if(r.outcome==='accepted'){document.getElementById('boxInstalar').classList.remove('show');toast('App instalado');}
+  }else{toast('Chrome: ⋮ > Adicionar à tela inicial');}
+}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}
+
+/* ============================================================
+   TOQUE DE INTERFONE — Web Audio API (ding-dong sintetizado)
+============================================================ */
+let audioCtx=null,doorbellTimer=null;
+function initAudio(){
   try{
-    const ref = dbStore.collection('casas').doc(CASA_ID);
-    const snap = await ref.get();
-    if(!snap.exists){
-      await ref.set({casaId:CASA_ID, nome: localStorage.getItem('portalink_endereco')||'Minha Casa', status:'trial', trialFim: Date.now()+7*24*60*60*1000, ativoAte:0, criadoEm: Date.now(), plano:'Mensal'});
-      console.log('[PORTALINK] Casa criada no Firestore:', CASA_ID);
-    }
-    ref.onSnapshot(doc=>{
-      if(doc.exists){ atualizarBanner(doc.data()); if(doc.data().nome) document.getElementById('tituloCasa').innerText = doc.data().nome; }
-    }, err=>{
-      console.log('[PORTALINK] Firestore erro:', err.code);
-      if(err.code==='permission-denied') toast('Firestore bloqueado: publique a regra de teste no console');
-    });
-  }catch(e){ console.log('[PORTALINK] Erro checarAtivacao', e); }
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+  }catch(e){}
+  return audioCtx;
 }
-function abrirAtivacao(){ document.getElementById('ativacao').classList.add('show'); gerarPix(); }
-function fecharAtivacao(){ document.getElementById('ativacao').classList.remove('show'); }
-async function gerarPix(){
-  document.getElementById('atvQrLoad').style.display='block';
-  try{
-    const r=await fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({casaId:CASA_ID, valor:29.90})});
-    const j=await r.json();
-    if(j.qr_code_base64){ document.getElementById('atvQrImg').src='data:image/png;base64,'+j.qr_code_base64; document.getElementById('atvCopia').textContent=j.copia_e_cola||''; pagamentoId=j.id; document.getElementById('atvQrLoad').style.display='none'; }
-    else document.getElementById('atvQrLoad').textContent='Mercado Pago não configurado no admin. Fale com o suporte.';
-  }catch(e){ document.getElementById('atvQrLoad').textContent='Erro ao gerar Pix. Tente de novo.'; }
+function bellTone(ctx,start,freq,vol,dur){
+  // Sino de mansão: fundamental + parciais inarmônicas → timbre de sino real
+  const partials=[
+    {m:1.00,a:0.52,d:1.00},
+    {m:2.01,a:0.22,d:0.60},
+    {m:3.04,a:0.12,d:0.42},
+    {m:4.08,a:0.06,d:0.28},
+    {m:5.43,a:0.03,d:0.18},
+  ];
+  for(const p of partials){
+    const osc=ctx.createOscillator(),g=ctx.createGain();
+    osc.type='sine';osc.frequency.value=freq*p.m;
+    g.gain.setValueAtTime(0,start);
+    g.gain.linearRampToValueAtTime(vol*p.a,start+0.005);
+    g.gain.exponentialRampToValueAtTime(0.0006,start+dur*p.d);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(start);osc.stop(start+dur*p.d+0.06);
+  }
 }
-function copiarPix(){ navigator.clipboard.writeText(document.getElementById('atvCopia').textContent).then(()=>toast('Pix copiado')); }
-async function verificarPagamento(){
-  if(!pagamentoId){ toast('Gere o Pix primeiro'); return; }
-  const r=await fetch('/api/check-payment?id='+pagamentoId); const j=await r.json();
-  if(j.status==='approved'){ toast('Pagamento confirmado!'); fecharAtivacao(); checarAtivacao(); }
-  else toast('Ainda não confirmado. Aguarde e tente de novo.');
+function playDingDong(){
+  const ctx=initAudio();if(!ctx) return;
+  const t=ctx.currentTime;
+  // Ding-Dong de mansão: ding agudo (Sol5) + dong grave (Dó5), 4ª justa — mais alto
+  bellTone(ctx,t,      783.99,0.60,1.25);
+  bellTone(ctx,t+0.40, 523.25,0.60,1.70);
 }
-async function ativarComChave(){
-  const codigo=document.getElementById('atvChave').value.trim().toUpperCase();
-  if(!codigo){ toast('Digite a chave'); return; }
-  const r=await fetch('/api/activate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({casaId:CASA_ID, codigo})});
-  const j=await r.json();
-  if(j.ok){ toast('Ativado!'); fecharAtivacao(); checarAtivacao(); } else toast(j.error||'Chave inválida');
+function startDoorbell(){stopDoorbell();playDingDong();doorbellTimer=setInterval(playDingDong,2600);}
+function stopDoorbell(){if(doorbellTimer){clearInterval(doorbellTimer);doorbellTimer=null;}}
+
+/* ---------- ATIVAR ---------- */
+function marcarAtivado(){
+  if(jaAtivou) return;
+  jaAtivou=true;
+  let b=document.getElementById('btnSom');
+  b.classList.add('on');
+  document.getElementById('btnSomTxt').innerText='Interfone ativo';
+  document.getElementById('subStatus').innerText='Ativo — pode deixar o app aberto, vai tocar.';
+  manterTelaAcesa();
+  pedirNotificacao();
+}
+function liberarSom(){
+  let a=document.getElementById('alarme');
+  a.muted=true;a.volume=1;
+  a.play().then(()=>{
+    a.pause();a.currentTime=0;a.muted=false;
+    a.play().then(()=>{a.pause();a.currentTime=0;marcarAtivado();}).catch(()=>{marcarAtivado();});
+  }).catch(()=>{});
+  initAudio();
+}
+function testarChamada(){
+  liberarSom();initAudio();
+  document.getElementById('alerta').style.display='block';
+  document.getElementById('nomeChamando').innerText='Teste — visitante chamando';
+  startDoorbell();marcarAtivado();
+  setTimeout(()=>{if(!atendido){document.getElementById('alerta').style.display='none';parar();}},8000);
 }
 
-/* PWA */
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferredPrompt=e;});
-async function instalarApp(){ if(deferredPrompt){ deferredPrompt.prompt(); const r=await deferredPrompt.userChoice; deferredPrompt=null; if(r.outcome==='accepted') toast('App instalado'); } else toast('Chrome: ⋮ > Adicionar à tela inicial'); }
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
-
-/* SOM */
-function initAudio(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); }catch(e){} return audioCtx; }
-function bellTone(ctx,start,freq,vol,dur){ [1,2.01,3.04].forEach((m,i)=>{ const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine'; o.frequency.value=freq*m; g.gain.setValueAtTime(0,start); g.gain.linearRampToValueAtTime(vol*(0.5/(i+1)),start+0.005); g.gain.exponentialRampToValueAtTime(0.0006,start+dur); o.connect(g).connect(ctx.destination); o.start(start); o.stop(start+dur+0.06); }); }
-function playDingDong(){ const ctx=initAudio(); if(!ctx) return; const t=ctx.currentTime; bellTone(ctx,t,783.99,0.6,1.25); bellTone(ctx,t+0.4,523.25,0.6,1.7); }
-function startDoorbell(){ stopDoorbell(); playDingDong(); doorbellTimer=setInterval(playDingDong,2600); }
-function stopDoorbell(){ if(doorbellTimer){ clearInterval(doorbellTimer); doorbellTimer=null; } }
-function marcarAtivado(){ if(jaAtivou) return; jaAtivou=true; document.getElementById('btnSom').classList.add('on'); document.getElementById('btnSomTxt').innerText='Interfone ativo'; document.getElementById('subStatus').innerText='Ativo — pode deixar o app aberto, vai tocar.'; manterTelaAcesa(); }
-function liberarSom(){ const a=document.createElement('audio'); initAudio(); marcarAtivado(); }
-function testarChamada(){ liberarSom(); document.getElementById('alerta').style.display='block'; document.getElementById('nomeChamando').innerText='Teste — visitante chamando'; startDoorbell(); setTimeout(()=>{ if(!atendido){ document.getElementById('alerta').style.display='none'; parar(); } },8000); }
-async function manterTelaAcesa(){ if('wakeLock' in navigator){ try{ if(wakeLock) await wakeLock.release(); wakeLock=await navigator.wakeLock.request('screen'); }catch(e){} } }
-function tocar(){ initAudio(); startDoorbell(); }
-function parar(){ stopDoorbell(); }
-
-/* CHAMADA - RTDB */
-db.ref('chamada').on('value', s=>{
-  const d=s.val();
-  if(d && d.status==='chamando' && !atendido){
-    document.getElementById('alerta').style.display='block';
-    document.getElementById('nomeChamando').innerText=(d.nome||'Visitante')+' está chamando';
-    document.getElementById('overlayNome').innerText=d.nome||'Visitante';
-    document.getElementById('callOverlay').style.display='flex';
-    tocar();
-  } else if(d && d.status==='atendido'){ document.getElementById('alerta').style.display='none'; document.getElementById('callOverlay').style.display='none'; parar(); }
-  else{ document.getElementById('alerta').style.display='none'; document.getElementById('callOverlay').style.display='none'; if(!atendido) parar(); }
+window.addEventListener('load',()=>{
+  liberarSom();
+  setTimeout(liberarSom,500);
+  setTimeout(liberarSom,1000);
+  setTimeout(liberarSom,2000);
 });
-async function getIceServers(){ return {iceServers:[{urls:"stun:stun.l.google.com:19302"}]}; }
-function toggleMic(){ if(!localStream) return; const t=localStream.getAudioTracks()[0]; if(!t) return; t.enabled=!t.enabled; document.getElementById('btnMic').classList.toggle('off',!t.enabled); }
-function toggleCam(){ if(!localStream) return; const t=localStream.getVideoTracks()[0]; if(!t) return; t.enabled=!t.enabled; document.getElementById('btnCam').classList.toggle('off',!t.enabled); }
+setInterval(()=>{if(!jaAtivou) liberarSom();},1000);
+document.addEventListener('click',()=>{liberarSom();});
+document.addEventListener('touchstart',()=>{liberarSom();},{passive:true});
+document.addEventListener('scroll',()=>{liberarSom();},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden) liberarSom();});
+
+/* ---------- TELA APAGADA ---------- */
+async function manterTelaAcesa(){
+  if('wakeLock' in navigator){
+    try{
+      if(wakeLock) await wakeLock.release();
+      wakeLock=await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release',()=>{wakeLock=null;});
+    }catch(e){}
+  }
+}
+setInterval(manterTelaAcesa,30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden && jaAtivou) manterTelaAcesa();});
+
+async function pedirNotificacao(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission==='default'){
+    try{await Notification.requestPermission();}catch(e){}
+  }
+  /* Registra o token FCM pra receber push mesmo com app fechado */
+  salvarTokenFCM();
+}
+function notificarChamada(nome){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  try{
+    const n=new Notification('Visitante chamando',{
+      body:nome+' está no seu interfone',
+      icon:'/icon-192.png',
+      tag:'porteiro',renotify:true,requireInteraction:true,
+      vibrate:[400,150,400,150,400,150,800]
+    });
+    n.onclick=()=>{window.focus();n.close();};
+  }catch(e){}
+}
+
+/* ---------- TOCAR / PARAR ---------- */
+function tocar(){
+  // Som da campainha = sino sintetizado (Ding-Dong de mansão).
+  // O <audio alarme> fica reservado só pra liberar áudio no iOS (liberarSom).
+  initAudio();startDoorbell();
+}
+function parar(){
+  stopDoorbell();
+  let a=document.getElementById('alarme');a.pause();a.currentTime=0;
+}
+
+/* ---------- Listener Firebase ---------- */
+db.ref('chamada').on('value',s=>{
+  let d=s.val();
+  if(d && d.status==='chamando' && !atendido){
+    const nome=(d.nome||'Visitante');
+    document.getElementById('alerta').style.display='block';
+    document.getElementById('nomeChamando').innerText=nome+' está chamando';
+    document.getElementById('overlayNome').innerText=nome;
+    document.getElementById('callOverlay').style.display='flex';
+    tocar();notificarChamada(nome);manterTelaAcesa();
+  }else if(d && d.status==='atendido'){
+    document.getElementById('alerta').style.display='none';
+    document.getElementById('callOverlay').style.display='none';
+    parar();
+  }else{
+    document.getElementById('alerta').style.display='none';
+    document.getElementById('callOverlay').style.display='none';
+    if(!atendido) parar();
+  }
+});
+
+/* ---------- Mic / Câmera toggle ---------- */
+const MIC_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>';
+const MIC_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><path d="M15 9.34V5a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2"/></svg>';
+const CAM_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
+const CAM_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"/><path d="M21 21H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"/><path d="M16 5h5a2 2 0 0 1 2 2v9"/></svg>';
+function initCtrls(){
+  const m=document.getElementById('btnMic'),c=document.getElementById('btnCam');
+  m.innerHTML=MIC_ON;m.classList.remove('off');
+  c.innerHTML=CAM_ON;c.classList.remove('off');
+}
+function toggleMic(){
+  if(!localStream)return;
+  const t=localStream.getAudioTracks()[0];if(!t)return;
+  t.enabled=!t.enabled;
+  const b=document.getElementById('btnMic');
+  b.innerHTML=t.enabled?MIC_ON:MIC_OFF;
+  b.classList.toggle('off',!t.enabled);
+}
+function toggleCam(){
+  if(!localStream)return;
+  const t=localStream.getVideoTracks()[0];if(!t)return;
+  t.enabled=!t.enabled;
+  const b=document.getElementById('btnCam');
+  b.innerHTML=t.enabled?CAM_ON:CAM_OFF;
+  b.classList.toggle('off',!t.enabled);
+  document.getElementById('videoLocal').classList.toggle('hidden',!t.enabled);
+}
+
+/* ---------- Atender / Recusar / Encerrar ---------- */
 async function atender(){
-  atendido=true; parar();
-  document.getElementById('alerta').style.display='none'; document.getElementById('callOverlay').style.display='none';
-  document.getElementById('btnEncerrar').style.display='block'; document.getElementById('video').style.display='block'; document.getElementById('falando').style.display='block';
-  salvarHistorico(document.getElementById('nomeChamando').innerText,'Atendida');
+  atendido=true;parar();
+  document.getElementById('alerta').style.display='none';
+  document.getElementById('callOverlay').style.display='none';
+  document.getElementById('btnEncerrar').style.display='block';
+  document.getElementById('video').style.display='block';
+  document.getElementById('falando').style.display='block';
+  dbg('conectando…');
+  let nome=document.getElementById('nomeChamando').innerText;
+  salvarHistorico(nome,'Atendida');
   await db.ref('chamada/status').set('atendido');
-  const stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); localStream=stream;
-  const vl=document.getElementById('videoLocal'); vl.srcObject=stream; vl.classList.add('show');
+  let stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+  localStream=stream;
+  const vl=document.getElementById('videoLocal');
+  vl.srcObject=stream;vl.classList.add('show');
+  initCtrls();
   document.getElementById('ctrlRow').classList.add('show');
   pc=new RTCPeerConnection(await getIceServers());
-  const remote=new MediaStream(); document.getElementById('video').srcObject=remote;
-  pc.ontrack=e=>e.streams[0].getTracks().forEach(t=>remote.addTrack(t));
+  pc.onicegatheringstatechange=()=>console.log('[ICE] gathering:',pc.iceGatheringState);
+  pc.oniceconnectionstatechange=()=>{
+    console.log('[ICE] conn:',pc.iceConnectionState);
+    dbg('ICE: '+pc.iceConnectionState);
+    if(pc.iceConnectionState==='failed')toast('Falha na conexão de vídeo. Rede móvel (4G/5G) pode bloquear — veja console (F12).');
+  };
+  const remoteStream=new MediaStream();
+  const v=document.getElementById('video');
+  v.srcObject=remoteStream;
+  pc.ontrack=e=>{
+    remoteStream.addTrack(e.track);
+    v.srcObject=remoteStream;
+    const playV=()=>v.play().catch(()=>{});
+    playV();
+    e.track.onunmute=playV;   // mobile: track pode chegar muda e demudar depois
+    console.log('[track] recebido do visitante:',e.track.kind,e.track.readyState);
+    dbg('track: '+e.track.kind+' '+e.track.readyState);
+  };
+  pc.onicecandidate=e=>{if(e.candidate){const t=e.candidate.candidate.match(/typ (\w+)/);console.log('[ICE] cand:',t?t[1]:'?');db.ref('chamada/candidateMorador').push(JSON.stringify(e.candidate))}};
+  const filaCandidatos=[];
+  let descRemota=false;
+  db.ref('chamada/candidateVisitante').on('child_added',async s=>{
+    if(!s.val()||!pc) return;
+    const c=JSON.parse(s.val());
+    if(!descRemota){filaCandidatos.push(c);console.log('[ICE] candidato na fila ('+filaCandidatos.length+')');dbg('cands na fila: '+filaCandidatos.length);return;}
+    try{await pc.addIceCandidate(c)}catch(e){console.warn('[ICE] addIceCandidate:',e)}
+  });
+  let snap=await db.ref('chamada').get();
+  await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(snap.val().offer)));
+  descRemota=true;
+  for(const c of filaCandidatos){try{await pc.addIceCandidate(c)}catch(e){}}
+  filaCandidatos.length=0;
   stream.getTracks().forEach(t=>pc.addTrack(t,stream));
-  const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
-  await db.ref('chamada/oferta').set({type:offer.type, sdp:offer.sdp});
-  db.ref('chamada/resposta').on('value', async s=>{ const a=s.val(); if(a && !pc.currentRemoteDescription){ await pc.setRemoteDescription(new RTCSessionDescription(a)); } });
-  db.ref('chamada/candidatos-visitante').on('child_added', s=>{ const c=s.val(); if(c) pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}); });
-  pc.onicecandidate=e=>{ if(e.candidate) db.ref('chamada/candidatos-morador').push(e.candidate.toJSON()); };
+  let ans=await pc.createAnswer();
+  await pc.setLocalDescription(ans);
+  await db.ref('chamada/answer').set(JSON.stringify(ans));
 }
-function recusar(){ atendido=false; parar(); document.getElementById('alerta').style.display='none'; document.getElementById('callOverlay').style.display='none'; salvarHistorico('Visitante','Recusada'); db.ref('chamada').set({status:'recusado'}); }
-function encerrar(){ atendido=false; parar(); if(pc) pc.close(); if(localStream) localStream.getTracks().forEach(t=>t.stop()); document.getElementById('video').style.display='none'; document.getElementById('videoLocal').classList.remove('show'); document.getElementById('falando').style.display='none'; document.getElementById('ctrlRow').classList.remove('show'); document.getElementById('btnEncerrar').style.display='none'; db.ref('chamada').set({status:'encerrado'}); }
+function recusar(){
+  let nome=document.getElementById('nomeChamando').innerText;
+  salvarHistorico(nome,'Recusada');
+  atendido=false;
+  db.ref('chamada').remove();parar();
+  document.getElementById('alerta').style.display='none';
+  document.getElementById('callOverlay').style.display='none';
+}
+function encerrar(){
+  atendido=false;
+  db.ref('chamada').remove();
+  location.reload();
+}
 
-mostrarMoradores(); mostrarEndereco(); carregarHistorico(); checarAtivacao();
+/* ---------- Ripple ---------- */
+document.querySelectorAll('.btn-primary,.icon-btn,.act,.btn-line,.bottom-nav button,#alerta button,#callOverlay .acts button').forEach(el=>{
+  el.addEventListener('click',e=>{
+    const r=document.createElement('span');r.className='ripple';
+    const rect=el.getBoundingClientRect();const size=Math.max(rect.width,rect.height);
+    r.style.width=r.style.height=size+'px';
+    r.style.left=(e.clientX-rect.left-size/2)+'px';
+    r.style.top=(e.clientY-rect.top-size/2)+'px';
+    el.appendChild(r);setTimeout(()=>r.remove(),550);
+  });
+});
+
+/* ---------- init ---------- */
+mostrarMoradores();mostrarEndereco();
 </script>
 </body>
 </html>

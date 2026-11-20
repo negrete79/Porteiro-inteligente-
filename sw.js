@@ -90,7 +90,7 @@ self.addEventListener('periodicsync', (event) => {
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
 
-const CACHE = 'portalink-v7';
+const CACHE = 'portalink-v6';
 const ASSETS = ['/eu.html', '/index.html', '/manifest.json', '/favicon.svg', '/icon-192.png', '/icon-512.png', '/icon-maskable-192.png', '/icon-maskable-512.png', '/apple-touch-icon.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS).catch(() => {})));
