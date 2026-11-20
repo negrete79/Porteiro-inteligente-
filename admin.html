@@ -7,20 +7,19 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
   :root{
-    --pri:#16a34a; --pri-d:#15803d; --pri-50:#dcfce7; --pri-100:#bbf7d0;
-    --ok:#16a34a; --ok-bg:#dcfce7; --ok-line:#bbf7d0;
-    --err:#dc2626; --err-bg:#fee2e2; --err-line:#fecaca;
-    --warn:#d97706; --warn-bg:#fef3c7;
-    --text:#0f172a; --text-2:#475569; --muted:#94a3b8;
-    --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
-    --sh-1:0 1px 2px rgba(0,0,0,.06); --sh-3:0 8px 24px rgba(0,0,0,.10);
-    --r-sm:10px; --r-md:14px; --r-lg:20px;
+    --pri:#16a34a;--pri-d:#15803d;--pri-50:#dcfce7;--pri-100:#bbf7d0;
+    --ok:#16a34a;--ok-bg:#dcfce7;--ok-line:#bbf7d0;
+    --err:#dc2626;--err-bg:#fee2e2;--err-line:#fecaca;
+    --warn:#d97706;--warn-bg:#fef3c7;
+    --text:#0f172a;--text-2:#475569;--muted:#94a3b8;
+    --line:#e2e8f0;--bg:#f1f5f9;--card:#fff;
+    --sh-1:0 1px 2px rgba(0,0,0,.06);--sh-3:0 8px 24px rgba(0,0,0,.10);
+    --r-sm:10px;--r-md:14px;--r-lg:20px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
-  a{color:inherit}
+  html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+  code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace}
 
-  /* ===== LOGIN ===== */
   #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#0f172a,#1e293b)}
   #login .box{background:var(--card);border-radius:var(--r-lg);padding:36px 30px;max-width:380px;width:100%;box-shadow:var(--sh-3);text-align:center}
   #login .logo{width:64px;height:64px;border-radius:18px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:0 auto 14px;box-shadow:0 6px 16px rgba(22,163,74,.4)}
@@ -31,79 +30,109 @@
   .pwd-wrap input:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-50)}
   .pwd-wrap .eye{position:absolute;right:2px;top:0;bottom:0;width:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted);border-radius:var(--r-sm);transition:color .15s,background .15s}
   .pwd-wrap .eye:hover{color:var(--text);background:rgba(0,0,0,.04)}
-  .pwd-wrap .eye:focus-visible{outline:2px solid var(--pri);outline-offset:-2px}
   .pwd-wrap .eye.on{color:var(--pri)}
-  #login button.entrar{width:100%;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
-  #login button.entrar:hover{background:var(--pri-d)}
+  #login .entrar{width:100%;background:var(--pri);color:#fff;border:none;padding:13px;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer}
+  #login .entrar:hover{background:var(--pri-d)}
   #login .err{color:var(--err);font-size:13px;margin-top:12px;display:none}
   #login .err.show{display:block}
   #login .hint{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.5}
 
-  /* ===== APP ===== */
-  #app{display:none;max-width:820px;margin:0 auto;padding:18px 16px 40px}
+  #app{display:none;max-width:960px;margin:0 auto;padding:18px 16px 48px}
   #app.show{display:block}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
-  .topbar .brand{display:flex;align-items:center;gap:10px}
-  .topbar .brand .logo{width:38px;height:38px;border-radius:11px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
-  .topbar .brand b{font-size:17px}
-  .topbar .brand small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .logo{width:38px;height:38px;border-radius:11px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+  .brand b{font-size:17px}
+  .brand small{display:block;color:var(--muted);font-size:11px}
   .btn-sair{background:transparent;border:1px solid var(--line);color:var(--text-2);padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer}
   .btn-sair:hover{background:#fff;border-color:var(--muted)}
 
-  .conn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);background:var(--card);border:1px solid var(--line);padding:9px 14px;border-radius:var(--r-sm);margin-bottom:16px}
+  .conn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);background:var(--card);border:1px solid var(--line);padding:9px 14px;border-radius:var(--r-sm);margin-bottom:14px}
   .conn .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex-shrink:0}
   .conn.ok .dot{background:var(--ok);box-shadow:0 0 0 4px var(--ok-bg)}
   .conn.off .dot{background:var(--err);box-shadow:0 0 0 4px var(--err-bg)}
 
+  .tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:4px;margin-bottom:16px;overflow-x:auto}
+  .tab{flex:0 0 auto;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:600;color:var(--text-2);cursor:pointer;border:none;background:none;white-space:nowrap}
+  .tab.active{background:var(--pri);color:#fff}
+  .pane{display:none}
+  .pane.show{display:block}
+
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:18px;margin-bottom:16px;box-shadow:var(--sh-1)}
-  .card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
   .card-h h3{margin:0;font-size:15px}
-  .card-h .sub{color:var(--muted);font-size:12px;font-weight:400}
+  .card-h .sub{color:var(--muted);font-size:12px}
 
-  .status-row{display:flex;align-items:center;gap:12px}
-  .status-row .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .status-row .ic.on{background:var(--ok-bg);color:var(--ok)}
-  .status-row .ic.off{background:#f1f5f9;color:var(--muted)}
-  .status-row .txt b{display:block;font-size:14px}
-  .status-row .txt small{color:var(--muted);font-size:12px;word-break:break-all}
-  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
-  .badge.ok{background:var(--ok-bg);color:var(--ok)}
-  .badge.err{background:var(--err-bg);color:var(--err)}
-  .badge.warn{background:var(--warn-bg);color:var(--warn)}
-  .badge.muted{background:#f1f5f9;color:var(--muted)}
-
-  .chamada-box{padding:14px;border-radius:var(--r-sm);background:#f8fafc;border:1px solid var(--line);text-align:center}
-  .chamada-box.ringing{background:var(--err-bg);border-color:var(--err-line)}
-  .chamada-box .big{font-size:18px;font-weight:700;margin-bottom:2px}
-  .chamada-box .nome{color:var(--text-2);font-size:13px}
-  .chamada-box.idle .big{color:var(--muted);font-weight:600}
-
-  .acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media (max-width:480px){.acoes{grid-template-columns:1fr}}
-  .btn{padding:13px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:background .15s,opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn{padding:10px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:background .15s,opacity .15s;display:inline-flex;align-items:center;gap:6px}
   .btn-pri{background:var(--pri);color:#fff}
   .btn-pri:hover{background:var(--pri-d)}
   .btn-line{background:#fff;border:1px solid var(--line);color:var(--text-2)}
   .btn-line:hover{border-color:var(--muted)}
+  .btn-sm{padding:6px 10px;font-size:12px}
+  .btn-err{background:var(--err-bg);color:var(--err);border:1px solid var(--err-line)}
+  .btn-err:hover{background:#fecaca}
   .btn:disabled{opacity:.45;cursor:not-allowed}
-  .btn svg{width:18px;height:18px}
+  .btn svg{width:16px;height:16px}
 
-  .log-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-  .log-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r-sm);background:#f8fafc;border:1px solid var(--line)}
-  .log-item .li-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--pri-50);color:var(--pri);flex-shrink:0}
-  .log-item .li-ic svg{width:16px;height:16px}
-  .log-item .li-info{flex:1;min-width:0}
-  .log-item .li-info b{display:block;font-size:13px}
-  .log-item .li-info small{color:var(--muted);font-size:11px}
-  .log-empty{text-align:center;color:var(--muted);font-size:13px;padding:18px}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-sm)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+  th{text-align:left;padding:10px 12px;background:#f8fafc;color:var(--text-2);font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafbfc}
+  td.nome b{font-size:14px}
+  td.nome small{display:block;color:var(--muted);font-size:11px}
+  td.act{white-space:nowrap}
+  td.act .btn{margin-right:4px;margin-bottom:4px}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .badge.err{background:var(--err-bg);color:var(--err)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.muted{background:#f1f5f9;color:var(--muted)}
+  .empty-row td{text-align:center;color:var(--muted);padding:24px}
 
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:11px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}
+  .dev-row td{background:#fafbfc;font-size:12px}
+  .dev-list{display:flex;flex-direction:column;gap:6px}
+  .dev-item{display:flex;align-items:center;gap:8px;padding:6px 8px;background:#fff;border:1px solid var(--line);border-radius:8px}
+  .dev-item .di-ic{width:24px;height:24px;border-radius:6px;background:var(--pri-50);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700}
+  .dev-item .di-info{flex:1;min-width:0}
+  .dev-item .di-info b{font-size:12px}
+  .dev-item .di-info small{color:var(--muted);font-size:10px;word-break:break-all}
+
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+  .modal.show{display:flex}
+  .modal .box{background:#fff;border-radius:var(--r-md);padding:22px;max-width:440px;width:100%;box-shadow:var(--sh-3);max-height:90vh;overflow-y:auto}
+  .modal h3{margin:0 0 4px;font-size:17px}
+  .modal .sub{color:var(--muted);font-size:12px;margin-bottom:16px}
+  .fld{margin-bottom:12px}
+  .fld label{display:block;font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:5px}
+  .fld input,.fld select{width:100%;border:1px solid var(--line);border-radius:var(--r-sm);padding:10px;font-size:14px;font-family:inherit;outline:none}
+  .fld input:focus,.fld select:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-50)}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+  .link-box{background:#f8fafc;border:1px solid var(--line);border-radius:var(--r-sm);padding:10px;font-size:12px;word-break:break-all;margin:8px 0}
+  .link-box b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600}
+
+  .valores-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:520px){.valores-grid{grid-template-columns:1fr}}
+  .stat{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm)}
+  .stat .ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--pri-50);color:var(--pri);flex-shrink:0}
+  .stat .ic svg{width:18px;height:18px}
+  .stat b{display:block;font-size:18px}
+  .stat small{color:var(--muted);font-size:11px}
+
+  .cham-list{display:flex;flex-direction:column;gap:8px}
+  .cham-item{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff}
+  .cham-item.ringing{border-color:var(--err-line);background:var(--err-bg)}
+  .cham-item .ci-info{flex:1;min-width:0}
+  .cham-item .ci-info b{font-size:14px}
+  .cham-item .ci-info small{display:block;color:var(--muted);font-size:11px}
+
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:11px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;max-width:90vw;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
 <div id="login">
   <div class="box">
     <div class="logo">P</div>
@@ -115,65 +144,94 @@
     </div>
     <button class="entrar" onclick="doLogin()">Entrar</button>
     <div class="err" id="loginErr">Senha incorreta.</div>
-    <div class="hint">Conexão direta com o Firebase do app (doorvi-video).<br>A senha é validada no navegador.</div>
+    <div class="hint">Painel conectado ao mesmo Firebase do app (doorvi-video).<br>Senha validada no navegador.</div>
   </div>
 </div>
 
-<!-- ===== APP ===== -->
 <div id="app">
   <div class="topbar">
-    <div class="brand">
-      <div class="logo">P</div>
-      <div><b>PortaLink</b><small>Painel administrativo</small></div>
-    </div>
+    <div class="brand"><div class="logo">P</div><div><b>PortaLink</b><small>Painel administrativo · SaaS</small></div></div>
     <button class="btn-sair" onclick="doLogout()">Sair</button>
   </div>
 
   <div class="conn" id="conn"><span class="dot"></span><span id="connTxt">Conectando ao Firebase…</span></div>
 
-  <!-- Status do morador -->
-  <div class="card">
-    <div class="card-h"><h3>App do morador</h3><span class="sub">lendo /moradorToken</span></div>
-    <div class="status-row">
-      <div class="ic off" id="morIc">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('clientes',this)">Clientes</button>
+    <button class="tab" onclick="showTab('valores',this)">Valores &amp; PIX</button>
+    <button class="tab" onclick="showTab('chamadas',this)">Chamadas</button>
+  </div>
+
+  <div class="pane show" id="pane-clientes">
+    <div class="card">
+      <div class="card-h">
+        <div><h3>Clientes cadastrados</h3><span class="sub">cada um = uma casa (campainha + celular do morador)</span></div>
+        <button class="btn btn-pri" onclick="abrirNovoCliente()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Novo cliente
+        </button>
       </div>
-      <div class="txt">
-        <b id="morTitle">Aguardando…</b>
-        <small id="morSub">o morador ainda não abriu o app</small>
+      <div class="tbl-wrap">
+        <table id="tblClientes">
+          <thead><tr><th>Cliente</th><th>Plano</th><th>Status</th><th>Vencimento</th><th>Dispositivos</th><th>Ações</th></tr></thead>
+          <tbody id="tbClientes"><tr class="empty-row"><td colspan="6">Carregando…</td></tr></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Chamada ao vivo -->
-  <div class="card">
-    <div class="card-h"><h3>Chamada ao vivo</h3><span class="sub">lendo /chamada</span></div>
-    <div class="chamada-box idle" id="chBox">
-      <div class="big" id="chBig">Ninguém chamando</div>
-      <div class="nome" id="chNome">—</div>
+  <div class="pane" id="pane-valores">
+    <div class="card">
+      <div class="card-h"><div><h3>Valores cobrados</h3><span class="sub">edita aqui → muda no app do cliente na hora</span></div></div>
+      <div class="valores-grid">
+        <div class="fld"><label>Mensalidade (R$)</label><input id="vMensal" type="number" step="0.01" placeholder="29.90"></div>
+        <div class="fld"><label>Vitalício (R$)</label><input id="vVital" type="number" step="0.01" placeholder="199.00"></div>
+        <div class="fld"><label>Dias de trial grátis</label><input id="vTrial" type="number" placeholder="7"></div>
+        <div class="fld"><label>Chave PIX (copia e cola)</label><input id="vPix" type="text" placeholder="00000000-0000-0000-0000-000000000000"></div>
+        <div class="fld" style="grid-column:1/-1"><label>WhatsApp de contato (com DDD)</label><input id="vWpp" type="text" placeholder="5511999999999"></div>
+      </div>
+      <div style="margin-top:8px"><button class="btn btn-pri" onclick="salvarValores()">Salvar valores</button></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div><h3>Resumo</h3></div></div>
+      <div class="valores-grid" id="resumoGrid"></div>
     </div>
   </div>
 
-  <!-- Ações -->
-  <div class="card">
-    <div class="card-h"><h3>Ações</h3><span class="sub">escreve em /chamada</span></div>
-    <div class="acoes">
-      <button class="btn btn-pri" id="btnTocar" onclick="tocarTeste()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        Tocar campainha de teste
-      </button>
-      <button class="btn btn-line" id="btnEncerrar" onclick="encerrarChamada()" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        Encerrar chamada
-      </button>
+  <div class="pane" id="pane-chamadas">
+    <div class="card">
+      <div class="card-h"><div><h3>Chamadas ao vivo</h3><span class="sub">toca a campainha de qualquer casa → aparece aqui em tempo real</span></div></div>
+      <div class="cham-list" id="chamList"><div class="empty-row" style="text-align:center;color:var(--muted);padding:24px">Nenhuma casa com chamada registrada ainda.</div></div>
     </div>
-    <p style="font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.5">O botão <b>Tocar</b> escreve <code>{status:'chamando', nome:'Teste — Painel ADM'}</code> no mesmo caminho que a campainha real usa. O app do morador vai tocar na hora — é assim que o painel <b>vê e é visto</b> pelo app.</p>
   </div>
+</div>
 
-  <!-- Log -->
-  <div class="card">
-    <div class="card-h"><h3>Histórico de campainhas</h3><span class="sub">lendo /historico (últimas 20)</span></div>
-    <div class="log-list" id="logList"><div class="log-empty">Sem registros ainda.</div></div>
+<div class="modal" id="modalNovo">
+  <div class="box">
+    <h3>Novo cliente</h3>
+    <div class="sub">Cria a casa no Firebase. O link gerado vai pro cliente instalar o app.</div>
+    <div class="fld"><label>Nome do cliente</label><input id="nNome" type="text" placeholder="Ex: João Silva"></div>
+    <div class="fld"><label>WhatsApp (com DDD)</label><input id="nWpp" type="text" placeholder="5511999999999"></div>
+    <div class="fld"><label>Plano</label><select id="nPlano"><option value="mensal">Mensal</option><option value="vitalicio">Vitalício</option></select></div>
+    <div class="fld"><label>Valor (R$) — deixe vazio pra usar o padrão</label><input id="nValor" type="number" step="0.01" placeholder="padrão do painel"></div>
+    <div class="modal-actions">
+      <button class="btn btn-line" onclick="fecharModal('modalNovo')">Cancelar</button>
+      <button class="btn btn-pri" onclick="criarCliente()">Criar cliente</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalLink">
+  <div class="box">
+    <h3>Links do cliente</h3>
+    <div class="sub" id="linkSub">Envie pro cliente instalar.</div>
+    <div class="link-box"><b>App do morador (celular dele)</b><span id="linkMorador"></span></div>
+    <div class="link-box"><b>Campainha (tablet/portão)</b><span id="linkCampainha"></span></div>
+    <div class="modal-actions">
+      <button class="btn btn-line" onclick="copiarLink('morador')">Copiar morador</button>
+      <button class="btn btn-line" onclick="copiarLink('campainha')">Copiar campainha</button>
+      <button class="btn btn-pri" onclick="fecharModal('modalLink')">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -182,135 +240,257 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
-/* ===== CONFIG (mesmo Firebase/RTDB do eu.html) ===== */
 const firebaseConfig={apiKey:"AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",authDomain:"doorvi-video.firebaseapp.com",databaseURL:"https://doorvi-video-default-rtdb.firebaseio.com",projectId:"doorvi-video",storageBucket:"doorvi-video.firebasestorage.app",messagingSenderId:"869461304542",appId:"1:869461304542:web:35fffbe8fb1b2a00a38e4f"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 const fbProjectId=firebaseConfig.projectId;
 
-/* ===== SENHA (troque aqui) =====
-   Gate client-side: o painel roda em Firebase Hosting (estático, sem backend),
-   então a senha é conferida no navegador. Pra segurança real do banco, o que vale
-   são as regras do RTDB (database.rules.json). */
+/* SENHA (gate client-side — troque aqui) */
 const ADMIN_PWD='portalink2026';
 
-/* ===== LOGIN ===== */
 const EYE_OPEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_CLOSED='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c6.5 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3.5 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
 function togglePwd(id,btn){
-  const inp=document.getElementById(id);
-  if(!inp) return;
+  const inp=document.getElementById(id);if(!inp)return;
   if(inp.type==='password'){inp.type='text';btn.innerHTML=EYE_CLOSED;btn.classList.add('on');}
   else{inp.type='password';btn.innerHTML=EYE_OPEN;btn.classList.remove('on');}
 }
-let logado=false;
 function doLogin(){
   const p=document.getElementById('loginPwd').value;
   if(p===ADMIN_PWD){
-    logado=true;
     sessionStorage.setItem('pl_admin_pwd',p);
     document.getElementById('login').style.display='none';
     document.getElementById('app').classList.add('show');
     iniciarPainel();
   }else{
-    const e=document.getElementById('loginErr');e.classList.add('show');
+    document.getElementById('loginErr').classList.add('show');
     document.getElementById('loginPwd').value='';
   }
 }
 function doLogout(){sessionStorage.removeItem('pl_admin_pwd');location.reload();}
 
-/* ===== PAINEL ===== */
+function showTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('show'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('show');
+}
+
+let casasCache={};
+let valoresCache={mensalidade:29.90,vitalicio:199.00,trialDias:7,pixKey:'',whatsapp:''};
+let expandedDev=null;
+
 function iniciarPainel(){
   console.log('[painel] conectado firebase:', fbProjectId);
-  // conexão
   db.ref('.info/connected').on('value',s=>{
-    const c=s.val();
-    const el=document.getElementById('conn');
+    const c=s.val(),el=document.getElementById('conn');
     if(c){el.classList.add('ok');el.classList.remove('off');document.getElementById('connTxt').textContent='Conectado ao Firebase — doorvi-video';}
     else{el.classList.add('off');el.classList.remove('ok');document.getElementById('connTxt').textContent='Sem conexão com o Firebase…';}
   });
-  // moradorToken
-  db.ref('moradorToken').on('value',s=>{
-    const tok=s.val();
-    const ic=document.getElementById('morIc');
-    if(tok){
-      ic.classList.add('on');ic.classList.remove('off');
-      document.getElementById('morTitle').innerHTML='App cadastrado <span class="badge ok">online</span>';
-      document.getElementById('morSub').textContent='token: '+String(tok).slice(0,24)+'…';
-    }else{
-      ic.classList.add('off');ic.classList.remove('on');
-      document.getElementById('morTitle').innerHTML='App não cadastrado <span class="badge muted">aguardando</span>';
-      document.getElementById('morSub').textContent='o morador precisa abrir o eu.html pelo menos uma vez';
+  db.ref('config/valores').on('value',s=>{
+    const v=s.val()||{};
+    valoresCache={mensalidade:v.mensalidade||29.90,vitalicio:v.vitalicio||199.00,trialDias:v.trialDias||7,pixKey:v.pixKey||'',whatsapp:v.whatsapp||''};
+    document.getElementById('vMensal').value=valoresCache.mensalidade;
+    document.getElementById('vVital').value=valoresCache.vitalicio;
+    document.getElementById('vTrial').value=valoresCache.trialDias;
+    document.getElementById('vPix').value=valoresCache.pixKey;
+    document.getElementById('vWpp').value=valoresCache.whatsapp;
+    renderResumo();
+  });
+  db.ref('casas').on('value',s=>{
+    casasCache=s.val()||{};
+    renderClientes();
+    renderChamadas();
+    renderResumo();
+  });
+}
+
+function renderClientes(){
+  const tb=document.getElementById('tbClientes');
+  const ids=Object.keys(casasCache);
+  if(!ids.length){tb.innerHTML='<tr class="empty-row"><td colspan="6">Nenhum cliente ainda. Clique em <b>Novo cliente</b>.</td></tr>';return;}
+  const now=Date.now();
+  const arr=ids.map(id=>({id,...casasCache[id]})).sort((a,b)=>{
+    const sa=stAtivo(a,now)?0:1, sb=stAtivo(b,now)?0:1;
+    if(sa!==sb) return sa-sb;
+    return (a.criadoEm||0)-(b.criadoEm||0);
+  });
+  let html='';
+  for(const c of arr){
+    const devCount=c.dispositivos?Object.keys(c.dispositivos).length:0;
+    const st=statusEfetivo(c,now);
+    const badge=st==='ativo'?'<span class="badge ok">ativo</span>':st==='trial'?'<span class="badge warn">trial</span>':'<span class="badge err">bloqueado</span>';
+    const venc=c.plano==='vitalicio'?'vitalício':(c.vencimento?fmtDate(c.vencimento):'—');
+    const expirou=st==='bloqueado' && c.plano!=='vitalicio' && c.vencimento && c.vencimento<now;
+    html+='<tr>'
+      +'<td class="nome"><b>'+esc(c.nome||c.id)+'</b><small>casa: '+esc(c.id)+(c.whatsapp?' · '+esc(c.whatsapp):'')+'</small></td>'
+      +'<td>'+(c.plano==='vitalicio'?'Vitalício':'Mensal')+(c.valor?' · R$ '+Number(c.valor).toFixed(2).replace('.',','):'')+'</td>'
+      +'<td>'+badge+(expirou?'<div style="font-size:10px;color:var(--err);margin-top:2px">vencido</div>':'')+'</td>'
+      +'<td>'+venc+'</td>'
+      +'<td>'+(devCount?'<b>'+devCount+'</b> aparelho'+(devCount>1?'s':'')+' <button class="btn btn-line btn-sm" onclick="toggleDev(\''+c.id+'\')">ver</button>':'<span style="color:var(--muted)">nenhum</span>')+'</td>'
+      +'<td class="act">'
+        +'<button class="btn btn-line btn-sm" onclick="abrirLink(\''+c.id+'\')">Link</button>'
+        +'<button class="btn btn-pri btn-sm" onclick="ativarManual(\''+c.id+'\')">Ativar</button>'
+        +'<button class="btn btn-line btn-sm" onclick="marcarPago(\''+c.id+'\')">Pago</button>'
+        +'<button class="btn btn-line btn-sm" onclick="gerarPix(\''+c.id+'\')">PIX</button>'
+        +'<button class="btn btn-err btn-sm" onclick="bloquear(\''+c.id+'\')">Bloquear</button>'
+        +'<button class="btn btn-line btn-sm" onclick="excluirCliente(\''+c.id+'\')">Excluir</button>'
+      +'</td></tr>';
+    if(expandedDev===c.id){
+      html+='<tr class="dev-row"><td colspan="6"><div class="dev-list">'+renderDevList(c.dispositivos,now)+'</div></td></tr>';
     }
-  });
-  // chamada ao vivo
-  db.ref('chamada').on('value',s=>{
-    const d=s.val();
-    const box=document.getElementById('chBox');
-    const btnEnc=document.getElementById('btnEncerrar');
-    if(d && d.status==='chamando'){
-      box.classList.add('ringing');box.classList.remove('idle');
-      document.getElementById('chBig').textContent='🔔 Chamando';
-      document.getElementById('chNome').textContent='Visitante: '+(d.nome||'(sem nome)');
-      btnEnc.disabled=false;
-    }else if(d && d.status==='atendido'){
-      box.classList.remove('ringing','idle');
-      document.getElementById('chBig').textContent='Atendido';
-      document.getElementById('chNome').textContent='—';
-      btnEnc.disabled=true;
-    }else{
-      box.classList.add('idle');box.classList.remove('ringing');
-      document.getElementById('chBig').textContent='Ninguém chamando';
-      document.getElementById('chNome').textContent='—';
-      btnEnc.disabled=true;
-    }
-  });
-  carregarLog();
+  }
+  tb.innerHTML=html;
+}
+function renderDevList(devs,now){
+  if(!devs) return '<div style="color:var(--muted);font-size:12px;padding:6px">Nenhum dispositivo registrou ainda.</div>';
+  const arr=Object.entries(devs).map(([id,d])=>({id,...d})).sort((a,b)=>(b.ultimoAcesso||0)-(a.ultimoAcesso||0));
+  return arr.map(d=>{
+    const ha=d.ultimoAcesso?tempoAtras(now-d.ultimoAcesso):'—';
+    const online=ha!=='—'&&now-(d.ultimoAcesso||0)<300000;
+    return '<div class="dev-item"><div class="di-ic">'+esc((d.modelo||'?').slice(0,2))+'</div>'
+      +'<div class="di-info"><b>'+esc(d.modelo||'Dispositivo')+'</b><small>id: '+esc(d.id)+' · acesso: '+ha+(d.appVersion?' · v'+esc(d.appVersion):'')+'</small></div>'
+      +'<span class="badge '+(online?'ok':'muted')+'">'+(online?'online':'offline')+'</span></div>';
+  }).join('');
+}
+function toggleDev(id){expandedDev=expandedDev===id?null:id;renderClientes();}
+
+function renderChamadas(){
+  const list=document.getElementById('chamList');
+  const arr=Object.entries(casasCache).map(([id,c])=>({id,...c})).filter(c=>c.chamada);
+  if(!arr.length){list.innerHTML='<div class="empty-row" style="text-align:center;color:var(--muted);padding:24px">Nenhuma casa com chamada registrada ainda.</div>';return;}
+  let html='';
+  for(const c of arr){
+    const ch=c.chamada;
+    const ringing=ch && ch.status==='chamando';
+    const nome=ch && ch.nome?ch.nome:'—';
+    html+='<div class="cham-item'+(ringing?' ringing':'')+'">'
+      +'<div class="ci-info"><b>'+esc(c.nome||c.id)+'</b><small>status: '+(ch&&ch.status?esc(ch.status):'—')+' · visitante: '+esc(nome)+'</small></div>'
+      +(ringing?'<span class="badge err">chamando agora</span>':'<span class="badge muted">'+(ch&&ch.status?esc(ch.status):'sem chamada')+'</span>')
+      +'</div>';
+  }
+  list.innerHTML=html;
 }
 
-async function tocarTeste(){
-  const btn=document.getElementById('btnTocar');btn.disabled=true;
-  try{
-    await db.ref('chamada').set({status:'chamando', nome:'Teste — Painel ADM', ts:Date.now()});
-    await db.ref('historico').push({nome:'Teste — Painel ADM', status:'chamando', origem:'painel', data:new Date().toLocaleString('pt-BR'), ts:Date.now()});
-    toast('Campainha de teste enviada 🔔');
-  }catch(e){toast('Erro: '+e.message);}
-  setTimeout(()=>{btn.disabled=false;},800);
+function renderResumo(){
+  const g=document.getElementById('resumoGrid');
+  const ids=Object.keys(casasCache);
+  const now=Date.now();
+  const ativos=ids.filter(id=>stAtivo(casasCache[id],now)).length;
+  const bloq=ids.filter(id=>statusEfetivo(casasCache[id],now)==='bloqueado').length;
+  const devs=ids.reduce((n,id)=>n+(casasCache[id].dispositivos?Object.keys(casasCache[id].dispositivos).length:0),0);
+  const mrr=ids.reduce((s,id)=>{const c=casasCache[id];return s+(c.plano!=='vitalicio'&&stAtivo(c,now)?Number(c.valor||valoresCache.mensalidade):0);},0);
+  g.innerHTML=stat('clientes',ids.length,'Clientes')
+    +stat('ativos',ativos,'Ativos')
+    +stat('bloq',bloq,'Bloqueados')
+    +stat('devs',devs,'Dispositivos')
+    +stat('mrr','R$ '+mrr.toFixed(2).replace('.',','),'Mensal (MRR)');
 }
-async function encerrarChamada(){
-  try{
-    await db.ref('chamada').remove();
-    toast('Chamada encerrada.');
-  }catch(e){toast('Erro: '+e.message);}
-}
-
-function carregarLog(){
-  db.ref('historico').limitToLast(20).on('value',s=>{
-    const v=s.val();const list=document.getElementById('logList');
-    if(!v){list.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
-    const arr=Object.values(v).sort((a,b)=>(b.ts||0)-(a.ts||0));
-    list.innerHTML=arr.map(h=>{
-      const ok=String(h.status||'').toLowerCase().indexOf('atend')>=0||h.origem==='painel';
-      return '<div class="log-item">'+
-        '<div class="li-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>'+
-        '<div class="li-info"><b>'+escapeHtml(h.nome||'Visitante')+'</b><small>'+escapeHtml(h.data||'')+(h.origem==='painel'?' · painel':'')+'</small></div>'+
-        '<span class="badge '+(ok?'ok':'warn')+'">'+escapeHtml(h.status||'?')+'</span>'+
-      '</div>';
-    }).join('');
-  });
+function stat(ic,n,label){
+  const icons={clientes:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>',ativos:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',bloq:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',devs:'<rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18"/>',mrr:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'};
+  return '<div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(icons[ic]||'')+'</svg></div><div><b>'+n+'</b><small>'+label+'</small></div></div>';
 }
 
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function abrirNovoCliente(){
+  document.getElementById('nNome').value='';document.getElementById('nWpp').value='';
+  document.getElementById('nPlano').value='mensal';document.getElementById('nValor').value='';
+  document.getElementById('modalNovo').classList.add('show');
+}
+function fecharModal(id){document.getElementById(id).classList.remove('show');}
+function criarCliente(){
+  const nome=document.getElementById('nNome').value.trim();
+  if(!nome){toast('Digite o nome do cliente');return;}
+  const wpp=document.getElementById('nWpp').value.trim();
+  const plano=document.getElementById('nPlano').value;
+  let valor=document.getElementById('nValor').value;
+  valor=valor?Number(valor):(plano==='vitalicio'?valoresCache.vitalicio:valoresCache.mensalidade);
+  const casaId='casa-'+Date.now().toString(36);
+  const trialDias=valoresCache.trialDias||7;
+  const venc=plano==='vitalicio'?Date.now()+365*86400000*100:Date.now()+trialDias*86400000;
+  db.ref('casas/'+casaId).set({nome,whatsapp:wpp,plano,valor:Number(valor),status:'trial',vencimento:venc,criadoEm:Date.now()}).then(()=>{
+    fecharModal('modalNovo');
+    abrirLink(casaId);
+    toast('Cliente criado! Copie o link e envie.');
+  }).catch(e=>toast('Erro: '+e.message));
+}
+function ativarManual(id){
+  const c=casasCache[id];if(!c)return;
+  const plano=c.plano||'mensal';
+  const venc=plano==='vitalicio'?Date.now()+365*86400000*100:Date.now()+30*86400000;
+  db.ref('casas/'+id).update({status:'ativo',vencimento:venc}).then(()=>toast('Cliente ativado manualmente.')).catch(e=>toast('Erro: '+e.message));
+}
+function marcarPago(id){
+  const c=casasCache[id];if(!c)return;
+  const plano=c.plano||'mensal';
+  const base=(c.vencimento&&c.vencimento>Date.now())?c.vencimento:Date.now();
+  const venc=plano==='vitalicio'?Date.now()+365*86400000*100:base+30*86400000;
+  db.ref('casas/'+id).update({status:'ativo',vencimento:venc}).then(()=>{
+    db.ref('pagamentos').push({casaId:id,valor:c.valor||valoresCache.mensalidade,status:'pago',data:new Date().toLocaleString('pt-BR'),ts:Date.now()});
+    toast('Marcado como pago (+30 dias).');
+  }).catch(e=>toast('Erro: '+e.message));
+}
+function bloquear(id){
+  if(!confirm('Bloquear este cliente? O app dele vai travar até você ativar de novo.'))return;
+  db.ref('casas/'+id).update({status:'bloqueado'}).then(()=>toast('Cliente bloqueado.')).catch(e=>toast('Erro: '+e.message));
+}
+function excluirCliente(id){
+  if(!confirm('Excluir este cliente definitivamente? (apaga casa, dispositivos e histórico de chamada)'))return;
+  db.ref('casas/'+id).remove().then(()=>toast('Cliente excluído.')).catch(e=>toast('Erro: '+e.message));
+}
+function gerarPix(id){
+  const c=casasCache[id];if(!c)return;
+  const valor=Number(c.valor||(c.plano==='vitalicio'?valoresCache.vitalicio:valoresCache.mensalidade));
+  const txt='PIX Copia e Cola\nChave: '+valoresCache.pixKey+'\nValor: R$ '+valor.toFixed(2).replace('.',',')+'\nPortaLink - '+c.nome+' (casa '+id+')';
+  if(!valoresCache.pixKey){toast('Configure sua chave PIX em "Valores & PIX" primeiro.');return;}
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>toast('PIX copiado! Cole e envie ao cliente.'));}
+  else{alert('Copie:\n\n'+txt);}
+}
+function abrirLink(id){
+  const base=location.origin+location.pathname.replace(/admin\.html$/,'');
+  const mor=base+'eu.html?casa='+id;
+  const cam=base+'index.html?casa='+id;
+  document.getElementById('linkSub').textContent='Cliente: '+(casasCache[id]&&casasCache[id].nome||id);
+  document.getElementById('linkMorador').textContent=mor;
+  document.getElementById('linkCampainha').textContent=cam;
+  window._links={morador:mor,campainha:cam};
+  document.getElementById('modalLink').classList.add('show');
+}
+function copiarLink(tipo){
+  const url=window._links&&window._links[tipo];if(!url)return;
+  if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>toast('Link '+tipo+' copiado.'));}
+  else{toast(url);}
+}
 
-/* toast */
+function salvarValores(){
+  const v={
+    mensalidade:Number(document.getElementById('vMensal').value)||29.90,
+    vitalicio:Number(document.getElementById('vVital').value)||199.00,
+    trialDias:Number(document.getElementById('vTrial').value)||7,
+    pixKey:document.getElementById('vPix').value.trim(),
+    whatsapp:document.getElementById('vWpp').value.trim()
+  };
+  db.ref('config/valores').set(v).then(()=>toast('Valores salvos — refletem no app na hora.')).catch(e=>toast('Erro: '+e.message));
+}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtDate(ts){if(!ts)return'—';const d=new Date(ts);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+function tempoAtras(ms){
+  if(ms<0)return'agora';if(ms<60000)return'agora';const m=Math.floor(ms/60000);if(m<60)return m+'min atrás';
+  const h=Math.floor(m/60);if(h<24)return h+'h atrás';const d=Math.floor(h/24);return d+'d atrás';
+}
+function stAtivo(c,now){const st=statusEfetivo(c,now);return st==='ativo'||st==='trial';}
+function statusEfetivo(c,now){
+  const st=c.status||'trial';
+  if(st==='bloqueado')return'bloqueado';
+  if(c.plano==='vitalicio'&&st!=='trial')return'ativo';
+  if(c.vencimento&&c.vencimento<now)return'bloqueado';
+  return st;
+}
+
 let toastT=null;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 
-/* auto-login se já tem senha na sessão */
-(function(){
-  const p=sessionStorage.getItem('pl_admin_pwd');
-  if(p){document.getElementById('loginPwd').value=p;doLogin();}
-})();
+(function(){const p=sessionStorage.getItem('pl_admin_pwd');if(p){document.getElementById('loginPwd').value=p;doLogin();}})();
 </script>
 </body>
 </html>

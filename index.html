@@ -230,6 +230,10 @@ video{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#000
 const firebaseConfig={apiKey:"AIzaSyBWNX3xRTBEybD0FmW85c1eL_3mSZujMlY",authDomain:"doorvi-video.firebaseapp.com",databaseURL:"https://doorvi-video-default-rtdb.firebaseio.com",projectId:"doorvi-video",storageBucket:"doorvi-video.firebasestorage.app",messagingSenderId:"869461304542",appId:"1:869461304542:web:35fffbe8fb1b2a00a38e4f"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
+/* SaaS: cada casa isolada. casaId vem da URL (?casa=ID) — bate com o eu.html do morador. */
+const CASA_ID=new URLSearchParams(location.search).get('casa')||'casa-padrao';
+const CASA_REF='casas/'+CASA_ID+'/';
+console.log('[PortaLink campainha] casa:', CASA_ID);
 /* ---------- ICE / TURN ----------
    STUN so resolve NAT normal (WiFi). Redes moveis (4G/5G) usam CGNAT —
    so um servidor TURN (que retransmite a midia) consegue atravessar.
@@ -329,19 +333,19 @@ async function chamar(){
       e.track.onunmute=playV;
       console.log('[track] recebido do morador:',e.track.kind);
     };
-    pc.onicecandidate=e=>{if(e.candidate){const t=e.candidate.candidate.match(/typ (\w+)/);console.log('[ICE] cand:',t?t[1]:'?');db.ref('chamada/candidateVisitante').push(JSON.stringify(e.candidate))}};
+    pc.onicecandidate=e=>{if(e.candidate){const t=e.candidate.candidate.match(/typ (\w+)/);console.log('[ICE] cand:',t?t[1]:'?');db.ref(CASA_REF+'chamada/candidateVisitante').push(JSON.stringify(e.candidate))}};
     const filaCandidatos=[];
     let descRemota=false;
-    db.ref('chamada/candidateMorador').on('child_added',async s=>{
+    db.ref(CASA_REF+'chamada/candidateMorador').on('child_added',async s=>{
       if(!s.val()||!pc) return;
       const c=JSON.parse(s.val());
       if(!descRemota){filaCandidatos.push(c);console.log('[ICE] candidato na fila ('+filaCandidatos.length+')');return;}
       try{await pc.addIceCandidate(c)}catch(e){console.warn('[ICE] addIceCandidate:',e)}
     });
     let offer=await pc.createOffer();await pc.setLocalDescription(offer);
-    await db.ref('chamada').set({nome:nome,status:'chamando',offer:JSON.stringify(offer)});
+    await db.ref(CASA_REF+'chamada').set({nome:nome,status:'chamando',offer:JSON.stringify(offer)});
     setStatus('Tocando no interfone do morador…','loading',true);
-    db.ref('chamada/answer').on('value',async s=>{
+    db.ref(CASA_REF+'chamada/answer').on('value',async s=>{
       if(s.val()&&pc&&!pc.currentRemoteDescription){
         try{
           await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(s.val())));
@@ -354,7 +358,7 @@ async function chamar(){
         }catch(e){}
       }
     });
-    db.ref('chamada').on('value',s=>{
+    db.ref(CASA_REF+'chamada').on('value',s=>{
       let d=s.val();
       if(!d){
         setStatus('Chamada encerrada','error');
@@ -369,7 +373,7 @@ async function chamar(){
 }
 function fim(){
   chamando=false;
-  db.ref('chamada').remove();
+  db.ref(CASA_REF+'chamada').remove();
   location.reload();
 }
 
